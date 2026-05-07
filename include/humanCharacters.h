@@ -20,7 +20,7 @@ class Warrior : public Character{
         Character(t_name, WarriorOffsets()){}
 
         CharacterClass getClass() const override{
-            return CharacterClass::Warrior;
+            return CharacterClass::Human_Warrior;
         }
 };
 
@@ -42,7 +42,7 @@ class Mage : public Character{
         Character(t_name, MageOffsets()){}
 
         CharacterClass getClass() const override{
-            return CharacterClass::Mage;
+            return CharacterClass::Human_Mage;
         }
 };
 
@@ -64,7 +64,7 @@ class Ranger : public Character{
         Character(t_name, RangerOffsets()){}
 
         CharacterClass getClass() const override{
-            return CharacterClass::Ranger;
+            return CharacterClass::Human_Ranger;
         }
 };
 

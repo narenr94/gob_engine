@@ -32,7 +32,7 @@ TEST_F(WarriorTest, Constructor_InitializesCurrentStatsToMax) {
 
 TEST_F(WarriorTest, GetClass_ReturnsWarrior) {
     Warrior warrior("Conan");
-    EXPECT_EQ(CharacterClass::Warrior, warrior.getClass());
+    EXPECT_EQ(CharacterClass::Human_Warrior, warrior.getClass());
 }
 
 TEST_F(WarriorTest, WarriorOffsets_ReturnsCorrectValues) {
@@ -91,7 +91,7 @@ TEST_F(MageTest, Constructor_InitializesCurrentStatsToMax) {
 
 TEST_F(MageTest, GetClass_ReturnsMage) {
     Mage mage("Gandalf");
-    EXPECT_EQ(CharacterClass::Mage, mage.getClass());
+    EXPECT_EQ(CharacterClass::Human_Mage, mage.getClass());
 }
 
 TEST_F(MageTest, MageOffsets_ReturnsCorrectValues) {
@@ -158,7 +158,7 @@ TEST_F(RangerTest, Constructor_InitializesCurrentStatsToMax) {
 
 TEST_F(RangerTest, GetClass_ReturnsRanger) {
     Ranger ranger("Aragorn");
-    EXPECT_EQ(CharacterClass::Ranger, ranger.getClass());
+    EXPECT_EQ(CharacterClass::Human_Ranger, ranger.getClass());
 }
 
 TEST_F(RangerTest, RangerOffsets_ReturnsCorrectValues) {
@@ -203,31 +203,31 @@ class CharacterFactoryTest : public ::testing::Test {};
 
 TEST_F(CharacterFactoryTest, CreateCharacter_Warrior_ReturnsWarriorInstance) {
     std::string name = "TestWarrior";
-    auto character = CharacterFactory::createCharacter(name, CharacterClass::Warrior);
+    auto character = CharacterFactory::createCharacter(name, CharacterClass::Human_Warrior);
 
     ASSERT_NE(nullptr, character);
     EXPECT_EQ("TestWarrior", character->getName());
-    EXPECT_EQ(CharacterClass::Warrior, character->getClass());
+    EXPECT_EQ(CharacterClass::Human_Warrior, character->getClass());
     EXPECT_EQ(DEFAULT_MAX_HEALTH + WARRIOR_MAX_HEALTH_OFFSET, character->getMaxHealth());
 }
 
 TEST_F(CharacterFactoryTest, CreateCharacter_Mage_ReturnsMageInstance) {
     std::string name = "TestMage";
-    auto character = CharacterFactory::createCharacter(name, CharacterClass::Mage);
+    auto character = CharacterFactory::createCharacter(name, CharacterClass::Human_Mage);
 
     ASSERT_NE(nullptr, character);
     EXPECT_EQ("TestMage", character->getName());
-    EXPECT_EQ(CharacterClass::Mage, character->getClass());
+    EXPECT_EQ(CharacterClass::Human_Mage, character->getClass());
     EXPECT_EQ(DEFAULT_MAX_MANA + MAGE_MAX_MANA_OFFSET, character->getMaxMana());
 }
 
 TEST_F(CharacterFactoryTest, CreateCharacter_Ranger_ReturnsRangerInstance) {
     std::string name = "TestRanger";
-    auto character = CharacterFactory::createCharacter(name, CharacterClass::Ranger);
+    auto character = CharacterFactory::createCharacter(name, CharacterClass::Human_Ranger);
 
     ASSERT_NE(nullptr, character);
     EXPECT_EQ("TestRanger", character->getName());
-    EXPECT_EQ(CharacterClass::Ranger, character->getClass());
+    EXPECT_EQ(CharacterClass::Human_Ranger, character->getClass());
     EXPECT_EQ(DEFAULT_BASE_DEXTERITY + RANGER_DEXTERITY_OFFSET, character->getDexterity());
 }
 
@@ -341,9 +341,9 @@ TEST_F(HumanCharacterIntegrationTest, PolymorphicBehavior_UsingBasePointer) {
     party.push_back(std::make_unique<Mage>("Healer"));
     party.push_back(std::make_unique<Ranger>("DPS"));
     
-    EXPECT_EQ(CharacterClass::Warrior, party[0]->getClass());
-    EXPECT_EQ(CharacterClass::Mage, party[1]->getClass());
-    EXPECT_EQ(CharacterClass::Ranger, party[2]->getClass());
+    EXPECT_EQ(CharacterClass::Human_Warrior, party[0]->getClass());
+    EXPECT_EQ(CharacterClass::Human_Mage, party[1]->getClass());
+    EXPECT_EQ(CharacterClass::Human_Ranger, party[2]->getClass());
     
     // All characters should have different stat distributions
     EXPECT_GT(party[0]->getStrength(), party[1]->getStrength()); // Warrior > Mage strength
@@ -356,9 +356,9 @@ TEST_F(HumanCharacterIntegrationTest, FactoryCreatesCorrectPolymorphicTypes) {
     std::string name2 = "FactoryMage";
     std::string name3 = "FactoryRanger";
     
-    auto warrior = CharacterFactory::createCharacter(name1, CharacterClass::Warrior);
-    auto mage = CharacterFactory::createCharacter(name2, CharacterClass::Mage);
-    auto ranger = CharacterFactory::createCharacter(name3, CharacterClass::Ranger);
+    auto warrior = CharacterFactory::createCharacter(name1, CharacterClass::Human_Warrior);
+    auto mage = CharacterFactory::createCharacter(name2, CharacterClass::Human_Mage);
+    auto ranger = CharacterFactory::createCharacter(name3, CharacterClass::Human_Ranger);
     
     // Each should have distinct characteristics
     EXPECT_GT(warrior->getMaxHealth(), mage->getMaxHealth());

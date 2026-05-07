@@ -40,9 +40,9 @@
 //------All available character list
 enum class CharacterClass{
 
-    Warrior,
-    Mage,
-    Ranger,
+    Human_Warrior,
+    Human_Mage,
+    Human_Ranger,
     NA
 
 };
