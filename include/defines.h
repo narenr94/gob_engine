@@ -1,0 +1,48 @@
+#pragma once
+
+#define DEFAULT_BASE_INTELLIGENCE   5
+#define DEFAULT_BASE_STRENGTH       5
+#define DEFAULT_BASE_CHARISMA       5
+#define DEFAULT_BASE_DEXTERITY      5
+#define DEFAULT_BASE_AGILITY        5
+
+#define DEFAULT_MAX_HEALTH  10
+#define DEFAULT_MAX_STAMINA 10
+#define DEFAULT_MAX_MANA    10
+
+#define WARRIOR_MAX_HEALTH_OFFSET   20
+#define WARRIOR_MAX_STAMINA_OFFSET  10
+#define WARRIOR_MAX_MANA_OFFSET     -5
+#define WARRIOR_INTELLIGENCE_OFFSET -2
+#define WARRIOR_STRENGTH_OFFSET      8
+#define WARRIOR_CHARISMA_OFFSET     0
+#define WARRIOR_DEXTERITY_OFFSET    3
+#define WARRIOR_AGILITY_OFFSET      2
+
+#define MAGE_MAX_HEALTH_OFFSET      -5
+#define MAGE_MAX_STAMINA_OFFSET     -5
+#define MAGE_MAX_MANA_OFFSET        25
+#define MAGE_INTELLIGENCE_OFFSET    10
+#define MAGE_STRENGTH_OFFSET        -3
+#define MAGE_CHARISMA_OFFSET        4
+#define MAGE_DEXTERITY_OFFSET       2
+#define MAGE_AGILITY_OFFSET         1
+
+#define RANGER_MAX_HEALTH_OFFSET      10
+#define RANGER_MAX_STAMINA_OFFSET     15
+#define RANGER_MAX_MANA_OFFSET        5
+#define RANGER_INTELLIGENCE_OFFSET    2
+#define RANGER_STRENGTH_OFFSET        4
+#define RANGER_CHARISMA_OFFSET        1
+#define RANGER_DEXTERITY_OFFSET       8
+#define RANGER_AGILITY_OFFSET         6
+
+//------All available character list
+enum class CharacterClass{
+
+    Warrior,
+    Mage,
+    Ranger,
+    NA
+
+};
