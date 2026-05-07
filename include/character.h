@@ -2,8 +2,21 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
 #include "defines.h"
+#include "item.h"
+#include "inventory.h"
+
+#define DEFAULT_BASE_INTELLIGENCE   5
+#define DEFAULT_BASE_STRENGTH       5
+#define DEFAULT_BASE_CHARISMA       5
+#define DEFAULT_BASE_DEXTERITY      5
+#define DEFAULT_BASE_AGILITY        5
+
+#define DEFAULT_MAX_HEALTH  10
+#define DEFAULT_MAX_STAMINA 10
+#define DEFAULT_MAX_MANA    10
 
 struct CharacterParamOffsets{
     int maxHealthOffset = 0;
@@ -54,6 +67,10 @@ class Character{
         unsigned short int m_dexterity;
         unsigned short int m_agility;
 
+        unsigned short int m_level;
+
+        std::shared_ptr<Inventory> m_inventory;
+
         //----------------Utility
 
         int lowerLimitOffset(unsigned int t_orgVal, int t_offset){
@@ -68,7 +85,7 @@ class Character{
     public:
 
         Character(const std::string& t_name, const CharacterParamOffsets& t_offsets) :
-        m_name(t_name),
+        m_name(t_name), m_level(1),
         m_maxHealth(DEFAULT_MAX_HEALTH), m_maxStamina(DEFAULT_MAX_STAMINA), m_maxMana(DEFAULT_MAX_MANA),
         m_health(DEFAULT_MAX_HEALTH), m_stamina(DEFAULT_MAX_STAMINA), m_mana(DEFAULT_MAX_MANA),
         m_intelligence(DEFAULT_BASE_INTELLIGENCE), m_charisma(DEFAULT_BASE_CHARISMA),
@@ -89,9 +106,13 @@ class Character{
             offsetDexterity(t_offsets.dexterityOffset);
             offsetAgility(t_offsets.agilityOffset);
 
+            m_inventory = std::make_shared<Inventory>(this, m_strength);
+
         }
 
-        virtual ~Character() = default;
+        virtual ~Character(){
+            m_inventory = nullptr;
+        }
 
         //----------------Gets
 
@@ -101,6 +122,14 @@ class Character{
 
         virtual CharacterClass getClass() const {
             return CharacterClass::NA;
+        }
+
+        unsigned short int getLevel() const {
+            return m_level;
+        }
+        
+        void getDrops(unsigned int& exp, std::vector<Item>& items){
+
         }
 
         unsigned int getMaxHealth() const {
@@ -147,10 +176,18 @@ class Character{
             return m_agility;
         }
 
+        std::shared_ptr<Inventory> getInventory(){
+            return m_inventory;
+        }
+
         //----------------Sets
 
         void setName(const std::string& t_name){
             m_name = t_name;
+        }
+
+        void setLevel(const unsigned short int t_level){
+            m_level = t_level;
         }
 
         void setMaxHealth(unsigned int t_maxHealth){
@@ -284,11 +321,23 @@ class Character{
             m_agility += lowerLimitOffset(m_agility, t_offset);
         }
 
+        void applyConsumableEffects(ConsumableEffects* t_effect){
+            offsetHealth(t_effect->healthOffset);
+            offsetStamina(t_effect->staminaOffset);
+            offsetMana(t_effect->manaOffset);
+
+            offsetIntelligence(t_effect->intelligenceOffset);
+            offsetStrength(t_effect->strengthOffset);
+            offsetCharisma(t_effect->charismaOffset);
+            offsetDexterity(t_effect->dexterityOffset);
+            offsetAgility(t_effect->agilityOffset);
+        }
+
         
 
 };
 
 class CharacterFactory{
     public:
-        static std::unique_ptr<Character> createCharacter(std::string& t_name, CharacterClass t_type);
+        static std::shared_ptr<Character> createCharacter(std::string& t_name, CharacterClass t_type);
 };

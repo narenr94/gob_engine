@@ -94,15 +94,3 @@ class Ranger : public Character{
             return CharacterClass::Human_Ranger;
         }
 };
-
-static CharacterParamOffsets NaOffsets(){
-    return {0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-            };
-}
