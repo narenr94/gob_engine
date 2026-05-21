@@ -8,12 +8,16 @@ class Race {
     private:
         Character* m_character;
 
+        std::string m_race;
+
     protected:
 
         virtual void raceBenifitsCharacterCreation() = 0;
 
     public:
-        Race(Character* t_character) : m_character(t_character){
+        Race(Character* t_character, const std::string& t_race) :
+        m_character(t_character), m_race(t_race)
+        {
 
         }
 
@@ -21,7 +25,9 @@ class Race {
 
         virtual void levelUp() = 0;
 
-        virtual CharacterRace getRace() = 0;
+        std::string getRace() const {
+            return m_race;
+        }
 
         
         
@@ -37,11 +43,13 @@ class Dwarf : public Race{
         void raceBenifitsCharacterCreation();
 
     public:
-        Dwarf(Character* t_character) : Race(t_character){
+        Dwarf(Character* t_character, const std::string& t_race) : 
+        Race(t_character, t_race)
+        {
 
         }
 
-        virtual CharacterRace getRace() = 0;
+        virtual std::string getRace() = 0;
 };
 
 class HillDwarf : public Dwarf{
@@ -51,13 +59,11 @@ class HillDwarf : public Dwarf{
         void raceBenifitsCharacterCreation();
 
     public:
-        HillDwarf(Character* t_character) : Dwarf(t_character){
+        HillDwarf(Character* t_character, const std::string& t_race) : 
+        Dwarf(t_character, t_race)
+        {
             Dwarf::raceBenifitsCharacterCreation();
             raceBenifitsCharacterCreation();
-        }
-
-        CharacterRace getRace(){
-            return CharacterRace::Hill_Dwarf;
         }
 };
 
@@ -69,13 +75,11 @@ class MountainDwarf : public Dwarf{
         void raceBenifitsCharacterCreation();
 
     public:
-        MountainDwarf(Character* t_character) : Dwarf(t_character){
+        MountainDwarf(Character* t_character, const std::string& t_race) : 
+        Dwarf(t_character, t_race)
+        {
             Dwarf::raceBenifitsCharacterCreation();
             raceBenifitsCharacterCreation();
-        }
-
-        CharacterRace getRace(){
-            return CharacterRace::Mountain_Dwarf;
         }
 };
 
@@ -89,11 +93,13 @@ class Elf : public Race{
         void raceBenifitsCharacterCreation();
 
     public:
-        Elf(Character* t_character) : Race(t_character){
+        Elf(Character* t_character, const std::string& t_race) : 
+        Race(t_character, t_race)
+        {
 
         }
 
-        virtual CharacterRace getRace() = 0;
+        virtual std::string getRace() = 0;
 };
 
 class HighElf : public Elf{
@@ -102,13 +108,11 @@ class HighElf : public Elf{
         void raceBenifitsCharacterCreation();
 
     public:
-        HighElf(Character* t_character) : Elf(t_character){
+        HighElf(Character* t_character, const std::string& t_race) : 
+        Elf(t_character, t_race)
+        {
             Elf::raceBenifitsCharacterCreation();
             raceBenifitsCharacterCreation();
-        }
-
-        CharacterRace getRace(){
-            return CharacterRace::High_Elf;
         }
 };
 
@@ -118,13 +122,11 @@ class WoodElf : public Elf{
         void raceBenifitsCharacterCreation();
 
     public:
-        WoodElf(Character* t_character) : Elf(t_character){
+        WoodElf(Character* t_character, const std::string& t_race) : 
+        Elf(t_character, t_race)
+        {
             Elf::raceBenifitsCharacterCreation();
             raceBenifitsCharacterCreation();
-        }
-
-        CharacterRace getRace(){
-            return CharacterRace::Wood_Elf;
         }
 };
 
@@ -134,13 +136,11 @@ class DarkElf : public Elf{
         void raceBenifitsCharacterCreation();
 
     public:
-        DarkElf(Character* t_character) : Elf(t_character){
+        DarkElf(Character* t_character, const std::string& t_race) : 
+        Elf(t_character, t_race)
+        {
             Elf::raceBenifitsCharacterCreation();
             raceBenifitsCharacterCreation();
-        }
-
-        CharacterRace getRace(){
-            return CharacterRace::Dark_Elf;
         }
 };
 
@@ -154,11 +154,12 @@ class Halfling : public Race{
         void raceBenifitsCharacterCreation();
 
     public:
-        Halfling(Character* t_character) : Race(t_character){
+        Halfling(Character* t_character, const std::string& t_race) : Race(t_character, t_race)
+        {
 
         }
 
-        virtual CharacterRace getRace() = 0;
+        virtual std::string getRace() = 0;
 };
 
 
@@ -168,13 +169,11 @@ class LightfootHalfling : public Halfling{
         void raceBenifitsCharacterCreation();
 
     public:
-        LightfootHalfling(Character* t_character) : Halfling(t_character){
+        LightfootHalfling(Character* t_character, const std::string& t_race) : 
+        Halfling(t_character, t_race)
+        {
             Halfling::raceBenifitsCharacterCreation();
             raceBenifitsCharacterCreation();
-        }
-
-        CharacterRace getRace(){
-            return CharacterRace::Lightfoot_Halfling;
         }
 };
 
@@ -185,13 +184,10 @@ class StoutHalfling : public Halfling{
         void raceBenifitsCharacterCreation();
 
     public:
-        StoutHalfling(Character* t_character) : Halfling(t_character){
+        StoutHalfling(Character* t_character, const std::string& t_race) : 
+        Halfling(t_character, t_race){
             Halfling::raceBenifitsCharacterCreation();
             raceBenifitsCharacterCreation();
-        }
-
-        CharacterRace getRace(){
-            return CharacterRace::Stout_Halfling;
         }
 };
 
@@ -205,12 +201,10 @@ class Human : public Race{
         void raceBenifitsCharacterCreation();
 
     public:
-        Human(Character* t_character) : Race(t_character){
+        Human(Character* t_character, const std::string& t_race) : 
+        Race(t_character, t_race)
+        {
 
-        }
-
-        CharacterRace getRace(){
-            return CharacterRace::Human;
         }
 };
 
@@ -222,13 +216,9 @@ class CustomRace : public Race{
         void raceBenifitsCharacterCreation();
 
     public:
-        CustomRace(Character* t_character, CustomRaceData* t_customData): 
-        Race(t_character)
+        CustomRace(Character* t_character, const std::string& t_race, CustomRaceData* t_customData): 
+        Race(t_character, t_race)
         {
 
-        }
-
-        CharacterRace getRace(){
-            return CharacterRace::Human;
         }
 };
