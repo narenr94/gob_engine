@@ -105,14 +105,14 @@ class Character{
             return m_name;
         }
 
-        CharacterRace getRace() const {
+        std::string getRace() const {
             return m_race->getRace();
         }
 
-        virtual CharacterClass getClass() const {
+        std::string getClass() const {
 
             //return m_class->getClass();
-            return CharacterClass::NA;
+            return "";
         }
 
         Level getLevel() const {
