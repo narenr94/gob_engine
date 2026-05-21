@@ -213,3 +213,22 @@ class Human : public Race{
             return CharacterRace::Human;
         }
 };
+
+//----------------Custom Race
+
+class CustomRace : public Race{
+    protected:
+
+        void raceBenifitsCharacterCreation();
+
+    public:
+        CustomRace(Character* t_character, CustomRaceData* t_customData): 
+        Race(t_character)
+        {
+
+        }
+
+        CharacterRace getRace(){
+            return CharacterRace::Human;
+        }
+};

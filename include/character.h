@@ -5,12 +5,15 @@
 #include "inventory.h"
 #include "dice.h"
 #include "race.h"
+#include "characterClass.h"
+#include "utilities.h"
 
 #include <string>
 #include <memory>
 #include <map>
 #include <vector>
 #include <algorithm>
+#include <utility>
 
 
 class Character{
@@ -19,27 +22,37 @@ class Character{
 
         std::string m_name;
 
-        unsigned int m_maxHitPoints = 0;
-        
-        unsigned int m_currentHitPoints = 0;
+        Level m_level;
 
-        unsigned short int m_level = 1;
+        unsigned short int m_proficiencyBonus;
+
+        unsigned int m_expPoints;
 
         std::unique_ptr<Race> m_race;
-        //std::unique_ptr<Class> m_class;
+        std::unique_ptr<CharacterClass> m_class;
 
-        std::map<std::string, unsigned short int> m_abilitiesMap;        
+        Alignment m_alignment;
+
+        //ability_name -> ability_score -> ability_mod
+        std::map<std::string, std::pair<unsigned short int, unsigned short int>> m_abilitiesMap;
+
+        //param_name -> curr_value -> max_value        
+        std::map<std::string, std::pair<unsigned short int, unsigned short int>> m_paramsPairMap;
 
         std::shared_ptr<Inventory> m_inventory;
 
         //----------------Utility
 
+        void assignCharacterParams(){
+            for(auto& cp : g_characterParamsVector){
+                m_paramsPairMap[cp] = {0, 0};
+            }
+        }
+
         void assignAbilities(){
-            for(auto& ab : g_defaultAbilities){                
+            for(auto& ab : g_abilitiesVector){                
 
-                m_abilitiesMap[ab] = 0;
-
-                //assignCustomAbilities(); - todo
+                m_abilitiesMap[ab] = {0, 0};
             }
                 
         }
@@ -56,47 +69,27 @@ class Character{
                 // sort descending
                 std::sort(rolls.begin(), rolls.end(), std::greater<unsigned short int>());
 
-                ab.second = rolls[0] + rolls[1] + rolls[2];
+                ab.second.first += rolls[0] + rolls[1] + rolls[2];
+                ab.second.second = calculateAbilityModifier(ab.second.first);
 
             }
         }
 
-        static std::unique_ptr<Race> raceFactory(const CharacterRace t_race, Character* t_character){
-            switch(t_race){
-                case CharacterRace::Hill_Dwarf:
-                    return std::make_unique<HillDwarf>(t_character);
-                case CharacterRace::Mountain_Dwarf:
-                    return std::make_unique<MountainDwarf>(t_character);
-                case CharacterRace::High_Elf:
-                    return std::make_unique<HighElf>(t_character);
-                case CharacterRace::Wood_Elf:
-                    return std::make_unique<WoodElf>(t_character);
-                case CharacterRace::Dark_Elf:
-                    return std::make_unique<DarkElf>(t_character);
-                case CharacterRace::Lightfoot_Halfling:
-                    return std::make_unique<LightfootHalfling>(t_character);
-                case CharacterRace::Stout_Halfling:
-                    return std::make_unique<StoutHalfling>(t_character);
-                case CharacterRace::Human:
-                    return std::make_unique<Human>(t_character);
-                default:
-                    return std::make_unique<Human>(t_character);
-            }
-
-            //todo : custom races
-        }
 
     public:
 
-        Character(const std::string& t_name, const CharacterRace t_race, const CharacterClass t_class) :
-        m_name(t_name), m_level(1)
+        Character(const std::string& t_name, std::unique_ptr<Race> t_race, 
+            std::unique_ptr<CharacterClass> t_class, const Level t_level) :
+        m_name(t_name), m_level(t_level), m_proficiencyBonus(g_proficiencyBonusLookupTable.at(t_level)),
+        m_race(std::move(t_race)), m_class(std::move(t_class)), 
+        m_expPoints(g_expPointsLookupTable.at(t_level))
         {
+
+            assignCharacterParams();
 
             assignAbilities();
 
             assignRandomValuesToAbilities();
-
-            m_race = raceFactory(t_race, this);
 
             //assign maxHP - class specific
 
@@ -122,7 +115,7 @@ class Character{
             return CharacterClass::NA;
         }
 
-        unsigned short int getLevel() const {
+        Level getLevel() const {
             return m_level;
         }
         
@@ -136,18 +129,46 @@ class Character{
                 return false;
             }
 
-            value = m_abilitiesMap.at(t_ability);
+            value = m_abilitiesMap.at(t_ability).first;
 
             return true;
         }
 
-        unsigned int getMaxHitPoints() const {
-            return m_maxHitPoints;
+        bool getAbilityModifier(const std::string& t_ability, unsigned short int& value) const {
+            if(m_abilitiesMap.find(t_ability) == m_abilitiesMap.end())
+            {
+                return false;
+            }
+
+            value = m_abilitiesMap.at(t_ability).second;
+
+            return true;
         }
 
-        unsigned int getCurrentHitPoints() const {
-            return m_currentHitPoints;
+        bool getParamMax(const std::string& t_param, unsigned short int& value) const {
+            if(m_paramsPairMap.find(t_param) == m_paramsPairMap.end()){
+                return false;
+            }
+
+            value = m_paramsPairMap.at(t_param).second;
+
+            return true;
         }
+
+        bool getParamCurr(const std::string& t_param, unsigned short int& value) const {
+            if(m_paramsPairMap.find(t_param) == m_paramsPairMap.end()){
+                return false;
+            }
+
+            value = m_paramsPairMap.at(t_param).first;
+
+            return true;
+        }
+
+        Alignment getAlignment() const {
+            return m_alignment;
+        }
+
 
         std::shared_ptr<Inventory> getInventory(){
             return m_inventory;
@@ -164,30 +185,48 @@ class Character{
             m_race->levelUp();
             //m_class->levelUp();
 
-            m_level += 1;
+            m_level = incrementLevel(m_level);
         }
 
-        void updateMaxHitPoints(unsigned short int t_maxHitPoints){
-            m_maxHitPoints = t_maxHitPoints;
-            if(m_currentHitPoints > m_maxHitPoints){
-                m_currentHitPoints = m_maxHitPoints;
+        bool updateParamMax(const std::string& t_param, const unsigned short int t_value){
+            if(m_paramsPairMap.find(t_param) == m_paramsPairMap.end()){
+                return false;
             }
+            m_paramsPairMap.at(t_param).second = t_value;
+
+            if(m_paramsPairMap.at(t_param).first > m_paramsPairMap.at(t_param).second){
+                m_paramsPairMap.at(t_param).first = m_paramsPairMap.at(t_param).second;
+            }
+
+            return true;
         }
 
-        void updateCurretHitPoints(unsigned short int t_currHitPoints){
-            if(t_currHitPoints > m_maxHitPoints){
-                m_currentHitPoints = m_maxHitPoints;
+        bool updateParamCurr(const std::string& t_param, const unsigned short int t_value){
+            if(m_paramsPairMap.find(t_param) == m_paramsPairMap.end()){
+                return false;
             }
-            else{
-                m_currentHitPoints = t_currHitPoints;
+            m_paramsPairMap.at(t_param).first = t_value;
+
+            if(m_paramsPairMap.at(t_param).first > m_paramsPairMap.at(t_param).second){
+                m_paramsPairMap.at(t_param).first = m_paramsPairMap.at(t_param).second;
             }
+
+            return true;
         }
 
-        void updateAbilityScore(const std::string& t_ability, const unsigned short int t_value){
+        bool updateAbilityScore(const std::string& t_ability, const unsigned short int t_value){
             if(m_abilitiesMap.find(t_ability) == m_abilitiesMap.end()){
-                return;
+                return false;
             }
-            m_abilitiesMap[t_ability] = t_value;
+            m_abilitiesMap.at(t_ability).first = t_value;
+
+            m_abilitiesMap.at(t_ability).second = calculateAbilityModifier(m_abilitiesMap.at(t_ability).first);
+            
+            return true;
+        }
+
+        void updateAlignment(Alignment t_alignment){
+            m_alignment = t_alignment;
         }
 
 };
