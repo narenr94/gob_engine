@@ -1,13 +1,40 @@
 #pragma once
 
+#include <vector>
+#include <string>
+
+//------Setup Default Abilities
+
+std::vector<std::string> g_defaultAbilities = {
+    "Strength",
+    "Dexterity",
+    "Constitution",
+    "Intelligence",
+    "Wisdom",
+    "Charisma"
+};
+
 //------All available character list
 enum class CharacterClass{
 
-    Human_Warrior,
-    Human_Mage,
-    Human_Ranger,
+    Fighter,
+    Cleric,
+    Rouge,
+    Wizard,
     NA
 
+};
+
+enum class CharacterRace{
+    Hill_Dwarf,
+    Mountain_Dwarf,
+    High_Elf,
+    Wood_Elf,
+    Dark_Elf,
+    Lightfoot_Halfling,
+    Stout_Halfling,
+    Human,
+    NA
 };
 
 //------All items list
@@ -27,17 +54,5 @@ enum class ItemUtility{
     Weapon,
     Quest,
     NonCombat
-};
-
-struct ConsumableEffects{
-    int healthOffset = 0;
-    int staminaOffset = 0;
-    int manaOffset = 0;
-
-    int intelligenceOffset = 0;
-    int strengthOffset = 0;
-    int charismaOffset = 0;
-    int dexterityOffset = 0;
-    int agilityOffset = 0;
 };
 

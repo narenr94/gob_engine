@@ -1,112 +1,104 @@
 #pragma once
 
-#include <string>
-#include <memory>
-#include <vector>
-
 #include "defines.h"
 #include "item.h"
 #include "inventory.h"
+#include "dice.h"
+#include "race.h"
 
-#define DEFAULT_BASE_INTELLIGENCE   5
-#define DEFAULT_BASE_STRENGTH       5
-#define DEFAULT_BASE_CHARISMA       5
-#define DEFAULT_BASE_DEXTERITY      5
-#define DEFAULT_BASE_AGILITY        5
-
-#define DEFAULT_MAX_HEALTH  10
-#define DEFAULT_MAX_STAMINA 10
-#define DEFAULT_MAX_MANA    10
-
-struct CharacterParamOffsets{
-    int maxHealthOffset = 0;
-    int maxStaminaOffset = 0;
-    int maxManaOffset = 0;
-
-    int intelligenceOffset = 0;
-    int strengthOffset = 0;
-    int charismaOffset = 0;
-    int dexterityOffset = 0;
-    int agilityOffset = 0;
-
-    CharacterParamOffsets operator+ (const CharacterParamOffsets& other) const {
-        CharacterParamOffsets ret;
-
-        ret.maxHealthOffset = maxHealthOffset + other.maxHealthOffset;
-        ret.maxStaminaOffset = maxStaminaOffset + other.maxStaminaOffset;
-        ret.maxManaOffset = maxManaOffset + other.maxManaOffset;
-
-        ret.intelligenceOffset = intelligenceOffset + other.intelligenceOffset;
-        ret.strengthOffset = strengthOffset + other.strengthOffset;
-        ret.charismaOffset = charismaOffset + other.charismaOffset;
-        ret.dexterityOffset = dexterityOffset + other.dexterityOffset;
-        ret.agilityOffset = agilityOffset + other.agilityOffset;
-
-        return ret;
-    }
-};
-
+#include <string>
+#include <memory>
+#include <map>
+#include <vector>
+#include <algorithm>
 
 
 class Character{
 
     private:
+
         std::string m_name;
 
-        unsigned int m_maxHealth;
-        unsigned int m_maxStamina;
-        unsigned int m_maxMana;
+        unsigned int m_maxHitPoints = 0;
+        
+        unsigned int m_currentHitPoints = 0;
 
-        unsigned int m_health;
-        unsigned int m_stamina;
-        unsigned int m_mana;
+        unsigned short int m_level = 1;
 
-        unsigned short int m_intelligence;
-        unsigned short int m_strength;
-        unsigned short int m_charisma;
-        unsigned short int m_dexterity;
-        unsigned short int m_agility;
+        std::unique_ptr<Race> m_race;
+        //std::unique_ptr<Class> m_class;
 
-        unsigned short int m_level;
+        std::map<std::string, unsigned short int> m_abilitiesMap;        
 
         std::shared_ptr<Inventory> m_inventory;
 
         //----------------Utility
 
-        int lowerLimitOffset(unsigned int t_orgVal, int t_offset){
-            if(t_offset < 0){
-                if((t_offset * -1) > t_orgVal){
-                    return ((-1) * static_cast<int>(t_orgVal));
-                }                
+        void assignAbilities(){
+            for(auto& ab : g_defaultAbilities){                
+
+                m_abilitiesMap[ab] = 0;
+
+                //assignCustomAbilities(); - todo
             }
-            return t_offset;
+                
+        }
+
+        void assignRandomValuesToAbilities(){
+            for(auto& ab : m_abilitiesMap){
+
+                //roll die four times and take sum of max 3
+                std::vector<int> rolls;
+                for (int i = 0; i < 4; ++i) {
+                    rolls.push_back(rollDie(6));
+                }
+
+                // sort descending
+                std::sort(rolls.begin(), rolls.end(), std::greater<unsigned short int>());
+
+                ab.second = rolls[0] + rolls[1] + rolls[2];
+
+            }
+        }
+
+        static std::unique_ptr<Race> raceFactory(const CharacterRace t_race, Character* t_character){
+            switch(t_race){
+                case CharacterRace::Hill_Dwarf:
+                    return std::make_unique<HillDwarf>(t_character);
+                case CharacterRace::Mountain_Dwarf:
+                    return std::make_unique<MountainDwarf>(t_character);
+                case CharacterRace::High_Elf:
+                    return std::make_unique<HighElf>(t_character);
+                case CharacterRace::Wood_Elf:
+                    return std::make_unique<WoodElf>(t_character);
+                case CharacterRace::Dark_Elf:
+                    return std::make_unique<DarkElf>(t_character);
+                case CharacterRace::Lightfoot_Halfling:
+                    return std::make_unique<LightfootHalfling>(t_character);
+                case CharacterRace::Stout_Halfling:
+                    return std::make_unique<StoutHalfling>(t_character);
+                case CharacterRace::Human:
+                    return std::make_unique<Human>(t_character);
+                default:
+                    return std::make_unique<Human>(t_character);
+            }
+
+            //todo : custom races
         }
 
     public:
 
-        Character(const std::string& t_name, const CharacterParamOffsets& t_offsets) :
-        m_name(t_name), m_level(1),
-        m_maxHealth(DEFAULT_MAX_HEALTH), m_maxStamina(DEFAULT_MAX_STAMINA), m_maxMana(DEFAULT_MAX_MANA),
-        m_health(DEFAULT_MAX_HEALTH), m_stamina(DEFAULT_MAX_STAMINA), m_mana(DEFAULT_MAX_MANA),
-        m_intelligence(DEFAULT_BASE_INTELLIGENCE), m_charisma(DEFAULT_BASE_CHARISMA),
-        m_strength(DEFAULT_BASE_STRENGTH), m_dexterity(DEFAULT_BASE_DEXTERITY), m_agility(DEFAULT_BASE_AGILITY)
+        Character(const std::string& t_name, const CharacterRace t_race, const CharacterClass t_class) :
+        m_name(t_name), m_level(1)
         {
-            offsetMaxHealth(t_offsets.maxHealthOffset);
-            m_health = m_maxHealth;
 
-            offsetMaxStamina(t_offsets.maxStaminaOffset);
-            m_stamina = m_maxStamina;
-            
-            offsetMaxMana(t_offsets.maxManaOffset);
-            m_mana = m_maxMana;
+            assignAbilities();
 
-            offsetIntelligence(t_offsets.intelligenceOffset);
-            offsetStrength(t_offsets.strengthOffset);
-            offsetCharisma(t_offsets.charismaOffset);
-            offsetDexterity(t_offsets.dexterityOffset);
-            offsetAgility(t_offsets.agilityOffset);
+            assignRandomValuesToAbilities();
 
-            m_inventory = std::make_shared<Inventory>(this, m_strength);
+            m_race = raceFactory(t_race, this);
+
+            //assign maxHP - class specific
 
         }
 
@@ -120,7 +112,13 @@ class Character{
             return m_name;
         }
 
+        CharacterRace getRace() const {
+            return m_race->getRace();
+        }
+
         virtual CharacterClass getClass() const {
+
+            //return m_class->getClass();
             return CharacterClass::NA;
         }
 
@@ -132,48 +130,23 @@ class Character{
 
         }
 
-        unsigned int getMaxHealth() const {
-            return m_maxHealth;
+        bool getAbilityScore(const std::string& t_ability, unsigned short int& value) const {
+            if(m_abilitiesMap.find(t_ability) == m_abilitiesMap.end())
+            {
+                return false;
+            }
+
+            value = m_abilitiesMap.at(t_ability);
+
+            return true;
         }
 
-        unsigned int getMaxStamina() const {
-            return m_maxStamina;
+        unsigned int getMaxHitPoints() const {
+            return m_maxHitPoints;
         }
 
-        unsigned int getMaxMana() const {
-            return m_maxMana;
-        }
-
-        unsigned int getHealth() const {
-            return m_health;
-        }
-
-        unsigned int getStamina() const {
-            return m_stamina;
-        }
-
-        unsigned int getMana() const {
-            return m_mana;
-        }
-
-        unsigned int getIntelligence() const {
-            return m_intelligence;
-        }
-
-        unsigned int getStrength() const {
-            return m_strength;
-        }
-
-        unsigned int getCharisma() const {
-            return m_charisma;
-        }
-
-        unsigned int getDexterity() const {
-            return m_dexterity;
-        }
-
-        unsigned int getAgility() const {
-            return m_agility;
+        unsigned int getCurrentHitPoints() const {
+            return m_currentHitPoints;
         }
 
         std::shared_ptr<Inventory> getInventory(){
@@ -182,162 +155,39 @@ class Character{
 
         //----------------Sets
 
-        void setName(const std::string& t_name){
+        void updateName(const std::string& t_name){
             m_name = t_name;
         }
 
-        void setLevel(const unsigned short int t_level){
-            m_level = t_level;
+        void levelUp(){
+
+            m_race->levelUp();
+            //m_class->levelUp();
+
+            m_level += 1;
         }
 
-        void setMaxHealth(unsigned int t_maxHealth){
-            m_maxHealth = t_maxHealth;
-            if(m_health > m_maxHealth){
-                m_health = m_maxHealth;
+        void updateMaxHitPoints(unsigned short int t_maxHitPoints){
+            m_maxHitPoints = t_maxHitPoints;
+            if(m_currentHitPoints > m_maxHitPoints){
+                m_currentHitPoints = m_maxHitPoints;
             }
         }
 
-        void setMaxStamina(unsigned int t_maxStamina){
-            m_maxStamina = t_maxStamina;
-            if(m_stamina > m_maxStamina){
-                m_stamina = m_maxStamina;
-            }
-        }
-
-        void setMaxMana(unsigned int t_maxMana){
-            m_maxMana = t_maxMana;
-            if(m_mana > m_maxMana){
-                m_mana = m_maxMana;
-            }
-        }
-
-        void setHealth(unsigned int t_health){
-            if(t_health > m_maxHealth){
-                m_health = m_maxHealth;
+        void updateCurretHitPoints(unsigned short int t_currHitPoints){
+            if(t_currHitPoints > m_maxHitPoints){
+                m_currentHitPoints = m_maxHitPoints;
             }
             else{
-                m_health = t_health;
+                m_currentHitPoints = t_currHitPoints;
             }
         }
 
-        void setStamina(unsigned int t_stamina){
-            if(t_stamina > m_maxStamina){
-                m_stamina = m_maxStamina;
+        void updateAbilityScore(const std::string& t_ability, const unsigned short int t_value){
+            if(m_abilitiesMap.find(t_ability) == m_abilitiesMap.end()){
+                return;
             }
-            else{
-                m_stamina = t_stamina;
-            }
+            m_abilitiesMap[t_ability] = t_value;
         }
 
-        void setMana(unsigned int t_mana){
-            if(t_mana > m_maxMana){
-                m_mana = m_maxMana;
-            }
-            else{
-                m_mana = t_mana;
-            }
-        }
-
-        void setIntelligence(unsigned int t_intelligence){
-            m_intelligence = t_intelligence;
-        }
-
-        void setStrength(unsigned int t_strength){
-            m_strength = t_strength;
-        }
-
-        void setCharisma(unsigned int t_charisma){
-            m_charisma = t_charisma;
-        }
-
-        void setDexterity(unsigned int t_dexterity){
-            m_dexterity = t_dexterity;
-        }
-
-        void setAgility(unsigned int t_agility){
-            m_agility = t_agility;
-        }
-
-
-        void offsetMaxHealth(int t_offset){
-            m_maxHealth += lowerLimitOffset(m_maxHealth, t_offset);
-            if(m_health > m_maxHealth){
-                m_health = m_maxHealth;
-            }
-        }
-
-        void offsetMaxStamina(int t_offset){
-            m_maxStamina += lowerLimitOffset(m_maxStamina, t_offset);
-            if(m_stamina > m_maxStamina){
-                m_stamina = m_maxStamina;
-            }
-        }
-
-        void offsetMaxMana(int t_offset){
-            m_maxMana += lowerLimitOffset(m_maxMana, t_offset);
-            if(m_mana > m_maxMana){
-                m_mana = m_maxMana;
-            }
-        }
-
-        void offsetHealth(int t_offset){
-            m_health += lowerLimitOffset(m_health, t_offset);
-            if(m_health > m_maxHealth){
-                m_health = m_maxHealth;
-            }
-        }
-
-        void offsetStamina(int t_offset){
-            m_stamina += lowerLimitOffset(m_stamina, t_offset);
-            if(m_stamina > m_maxStamina){
-                m_stamina = m_maxStamina;
-            }
-        }
-
-        void offsetMana(int t_offset){
-            m_mana += lowerLimitOffset(m_mana, t_offset);
-            if(m_mana > m_maxMana){
-                m_mana = m_maxMana;
-            }
-        }
-
-        void offsetIntelligence(int t_offset){
-            m_intelligence += lowerLimitOffset(m_intelligence, t_offset);
-        }
-
-        void offsetStrength(int t_offset){
-            m_strength += lowerLimitOffset(m_strength, t_offset);
-        }
-
-        void offsetCharisma(int t_offset){
-            m_charisma += lowerLimitOffset(m_charisma, t_offset);
-        }
-
-        void offsetDexterity(int t_offset){
-            m_dexterity += lowerLimitOffset(m_dexterity, t_offset);
-        }
-
-        void offsetAgility(int t_offset){
-            m_agility += lowerLimitOffset(m_agility, t_offset);
-        }
-
-        void applyConsumableEffects(ConsumableEffects* t_effect){
-            offsetHealth(t_effect->healthOffset);
-            offsetStamina(t_effect->staminaOffset);
-            offsetMana(t_effect->manaOffset);
-
-            offsetIntelligence(t_effect->intelligenceOffset);
-            offsetStrength(t_effect->strengthOffset);
-            offsetCharisma(t_effect->charismaOffset);
-            offsetDexterity(t_effect->dexterityOffset);
-            offsetAgility(t_effect->agilityOffset);
-        }
-
-        
-
-};
-
-class CharacterFactory{
-    public:
-        static std::shared_ptr<Character> createCharacter(std::string& t_name, CharacterClass t_type);
 };
