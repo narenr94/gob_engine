@@ -1,0 +1,44 @@
+{
+    "name": "halfling",
+    "is_abstract": true,
+    "base_race" : null,
+    "ability_mods" : [
+        {
+            "ability" : "dexterity",
+            "mod" : 2
+        }
+    ],
+    "age" : {
+        "mature" : 18,
+        "life_span" : 150        
+    },
+    "alignment" : ["lawful_good"],
+    "size" : {
+        "category" : "small",
+        "avg_height_m" : 1,
+        "avg_weight_kg" : 18
+    },
+    "speed_mps" : 7.5,
+    "languages" : [
+        {
+            "name" : "common",
+            "speak" : true,
+            "read" : true,
+            "write" : true
+        },
+        {
+            "name" : "halfling",
+            "speak" : true,
+            "read" : true,
+            "write" : true
+        }
+    ],
+    "resilience" : [
+        {
+            "affliction" : "frightened",
+            "has_advantage" : true,
+            "has_resistance" : true
+        }
+    ]
+
+}

@@ -1,0 +1,65 @@
+{
+    "name": "dwarf",
+    "is_abstract": true,
+    "base_race" : null,
+    "ability_mods" : [
+        {
+            "ability" : "constitution",
+            "mod" : 2
+        }
+    ],
+    "age" : {
+        "mature" : 18,
+        "life_span" : 350        
+    },
+    "alignment" : ["lawful_good"],
+    "size" : {
+        "category" : "medium",
+        "avg_height_m" : 1.35,
+        "avg_weight_kg" : 70
+    },
+    "speed_mps" : 7.5,
+    "languages" : [
+        {
+            "name" : "common",
+            "speak" : true,
+            "read" : true,
+            "write" : true
+        },
+        {
+            "name" : "dwarvish",
+            "speak" : true,
+            "read" : true,
+            "write" : true
+        }
+    ],
+    "dark_vision" : {
+        "has_darkvision" : true,
+        "dim_light_eq" : {
+            "as_ambient" : "normal",
+            "distance_m" :  18
+        },
+        "darkness_eq" : {
+            "as_ambient" : "dim",
+            "distance_m" :  -1
+        }
+    },
+    "resilience" : [
+        {
+            "affliction" : "poison",
+            "has_advantage" : true,
+            "has_resistance" : true
+        }
+    ],
+    "proficiency" : {
+        "weapons" :["battle_axe", "hand_axe", "light_hammer", "war_hammer"]
+    },
+    "options" : {
+        "proficiency" : {
+                "tools" : {
+                    "choose" : 1,
+                    "options" : ["smith_tools", "brewer_tools", "mason_tools"]
+            }
+        }
+    }
+}

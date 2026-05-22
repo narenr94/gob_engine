@@ -1,0 +1,14 @@
+{
+    "name": "mountain_dwarf",
+    "is_abstract": false,
+    "base_race" : "dwarf",
+    "ability_mods" : [
+        {
+            "ability" : "strength",
+            "mod" : 2
+        }
+    ],
+    "proficiency" : {
+        "armors" :["light_armor", "medium_armor"]
+    }  
+}

@@ -1,0 +1,28 @@
+{
+    "name": "high_elf",
+    "is_abstract": false,
+    "base_race" : "elf",
+    "ability_mods" : [
+        {
+            "ability" : "intelligence",
+            "mod" : 1
+        }
+    ],
+    "proficiency" : {
+        "weapons" : ["long_sword", "short_sword", "long_bow", "short_bow"]
+    },
+    "options" : {
+        "cantrips" : {
+            "choose" : 1,
+            "option" : ["all"]
+        },
+        "languages" : {
+            "options" : ["all"],
+            "choose" : 1,
+            "speak" : true,
+            "read" : true,
+            "write" : true            
+        }
+    }
+
+}

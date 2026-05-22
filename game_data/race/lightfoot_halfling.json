@@ -1,0 +1,11 @@
+{
+    "name": "lightfoot_halfling",
+    "is_abstract": false,
+    "base_race" : "halfling",
+    "ability_mods" : [
+        {
+            "ability" : "charisma",
+            "mod" : 1
+        }
+    ]
+}

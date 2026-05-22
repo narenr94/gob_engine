@@ -1,0 +1,11 @@
+{
+    "name": "hill_dwarf",
+    "is_abstract": false,
+    "base_race" : "dwarf",
+    "ability_mods" : [
+        {
+            "ability" : "wisdom",
+            "mod" : 1
+        }
+    ]
+}

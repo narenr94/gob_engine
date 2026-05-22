@@ -1,0 +1,60 @@
+{
+    "name": "elf",
+    "is_abstract": true,
+    "base_race" : null,
+    "ability_mods" : [
+        {
+            "ability" : "dexterity",
+            "mod" : 2
+        }
+    ],
+    "age" : {
+        "mature" : 18,
+        "life_span" : 750        
+    },
+    "alignment" : ["chaotic_good"],
+    "size" : {
+        "category" : "medium",
+        "avg_height_m" : 1.7,
+        "avg_weight_kg" : 55
+    },
+    "speed_mps" : 9,
+    "languages" : [
+        {
+            "name" : "common",
+            "speak" : true,
+            "read" : true,
+            "write" : true
+        },
+        {
+            "name" : "elvish",
+            "speak" : true,
+            "read" : true,
+            "write" : true
+        }
+    ],
+    "dark_vision" : {
+        "has_darkvision" : true,
+        "dim_light_eq" : {
+            "as_ambient" : "normal",
+            "distance_m" :  18
+        },
+        "darkness_eq" : {
+            "as_ambient" : "dim",
+            "distance_m" :  -1
+        }
+    },
+    "resilience" : [
+        {
+            "affliction" : "charm",
+            "has_advantage" : true,
+            "has_resistance" : true
+        },
+        {
+            "affliction" : "sleep",
+            "immune" : true
+        }
+    ],
+    "sleep_duration_hrs" : 4
+
+}

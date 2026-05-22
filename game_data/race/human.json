@@ -1,0 +1,31 @@
+{
+    "name": "human",
+    "is_abstract": true,
+    "base_race" : null,
+    "ability_mods" : [
+        {
+            "ability" : "all",
+            "mod" : 1
+        }
+    ],
+    "age" : {
+        "mature" : 18,
+        "life_span" : 100       
+    },
+    "alignment" : ["neutral_neutral"],
+    "size" : {
+        "category" : "medium",
+        "avg_height_m" : 1.7,
+        "avg_weight_kg" : 55
+    },
+    "speed_mps" : 9,
+    "languages" : [
+        {
+            "name" : "common",
+            "speak" : true,
+            "read" : true,
+            "write" : true
+        }
+    ]
+
+}

@@ -1,0 +1,26 @@
+{
+    "name": "dark_elf",
+    "is_abstract": false,
+    "base_race" : "elf",
+    "ability_mods" : [
+        {
+            "ability" : "charisma",
+            "mod" : 1
+        }
+    ],
+    "dark_vision" : {
+        "has_darkvision" : true,
+        "dim_light_eq" : {
+            "as_ambient" : "normal",
+            "distance_m" :  -1
+        },
+        "darkness_eq" : {
+            "as_ambient" : "normal",
+            "distance_m" :  18
+        }
+    },
+    "alignment" : "chaotic_evil",
+    "proficiency" : {
+        "weapons" : ["rapier", "shortsword", "hand_crossbow"]
+    }
+}
