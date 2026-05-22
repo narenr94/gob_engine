@@ -12,7 +12,7 @@
         "mature" : 18,
         "life_span" : 150        
     },
-    "alignment" : ["lawful_good"],
+    "alignment" : "lawful_good",
     "size" : {
         "category" : "small",
         "avg_height_m" : 1,

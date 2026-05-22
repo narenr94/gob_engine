@@ -4,6 +4,9 @@
 #include <string>
 #include <cmath>
 #include <stdexcept>
+#include <iostream>
+
+#define LOG(text) do {std::cout << text << std::endl;} while(0)
 
 //------Vector of Abilities
 
@@ -103,7 +106,7 @@ enum class ItemUtility{
 
 //--------Lookup Tables
 
-const std::map<Level, unsigned int> g_expPointsLookupTable = {
+const std::vector<std::pair<Level, unsigned int>> g_expPointsLookupTable = {
     {Level::Lvl1, 0},
     {Level::Lvl2, 300},
     {Level::Lvl3, 900},
@@ -127,7 +130,7 @@ const std::map<Level, unsigned int> g_expPointsLookupTable = {
 
 };
 
-const std::map<Level, unsigned short int> g_proficiencyBonusLookupTable = {
+const std::vector<std::pair<Level, unsigned short int>> g_proficiencyBonusLookupTable = {
     {Level::Lvl1, 2},
     {Level::Lvl2, 2},
     {Level::Lvl3, 2},
@@ -150,15 +153,91 @@ const std::map<Level, unsigned short int> g_proficiencyBonusLookupTable = {
     {Level::Lvl20, 6}
 };
 
+const std::vector<std::pair<Alignment,std::string>> alignmentStrMap = {
+    {Alignment::lawful_good, "lawful_good"},
+    {Alignment::lawful_neutral, "lawful_neutral"},
+    {Alignment::lawful_evil, "lawful_evil"},
+    {Alignment::neutral_good, "neutral_good"},
+    {Alignment::neutral_neutral, "neutral_neutral"},
+    {Alignment::neutral_evil, "neutral_evil"},
+    {Alignment::chaotic_good, "chaotic_good"},
+    {Alignment::chaotic_neutral, "chaotic_neutral"},
+    {Alignment::chaotic_evil, "chaotic_evil"},
+};
+
+const std::vector<std::pair<SizeCategory, std::string>> sizeCategoryStrMap = {
+    {SizeCategory::Tiny, "tiny"},
+    {SizeCategory::Small, "small"},
+    {SizeCategory::Medium, "medium"},
+    {SizeCategory::Tiny, "tiny"},
+    {SizeCategory::Large, "large"},
+    {SizeCategory::Huge, "huge"},
+    {SizeCategory::Garg, "gargantuan"},
+};
+
+const std::vector<std::pair<IlluminationType, std::string>> illumincationTypeStrMap = {
+    {IlluminationType::Normal, "normal"},
+    {IlluminationType::Dim, "dim"},
+    {IlluminationType::Dark, "dark"}
+};
+
+std::string alignmentToString(Alignment alignment){
+    
+    for(auto& mp : alignmentStrMap){
+        if(mp.first == alignment){
+            return mp.second;
+        }
+    }
+    
+    throw std::runtime_error("Invalid alignment");
+
+    return "";
+}
+
+std::string sizeCategoryToString(SizeCategory sz){
+    for(auto& mp : sizeCategoryStrMap){
+        if(mp.first == sz){
+            return mp.second;
+        }
+    }
+
+    throw std::runtime_error("Invalid size category");
+
+    return "";
+}
+
+std::string illuminationTypeToString(IlluminationType it){
+    for(auto& mp : illumincationTypeStrMap){
+        if(mp.first == it){
+            return mp.second;
+        }
+    }
+
+    throw std::runtime_error("Invalid illumincation type");
+
+    return "";
+}
 
 struct AgeData{
     unsigned short int maturityAge;
     unsigned short int avgLifespan;
+
+    void printData(){
+
+        LOG("Age Data:");
+        LOG("maturity:" + std::to_string(maturityAge) + " avgLifespan:" + std::to_string(avgLifespan));
+    }
 }; 
 
 struct SizeData{
     SizeCategory category;
     std::pair<float, float> dimensions; //height in meters, weight in kgs
+
+    void printData(){
+        LOG("Size data:");
+        LOG("category:" + sizeCategoryToString(category));
+        LOG("height:" + std::to_string(dimensions.first) + " weight:" + std::to_string(dimensions.second));
+    }
 };
 
 struct LanguageData{
@@ -166,16 +245,37 @@ struct LanguageData{
     bool speak = false;
     bool read = false;
     bool write = false;
+
+    void printData(){
+        LOG("Language Data:" << std::endl);
+        LOG("Language:" + language);
+        LOG("speak:" + std::to_string(speak));
+        LOG("read:" + std::to_string(read));
+        LOG("write:" + std::to_string(write));
+    }
 };
 
 struct ProficiencyData{
 
     std::vector<std::string> weaponProficiencies;
-    std::vector<std::pair<std::vector<std::string>, unsigned short int>> weaponProficienciesOptions;
     std::vector<std::string> armorProficiencies;
-    std::vector<std::pair<std::vector<std::string>, unsigned short int>> armorProficienciesOptions;
     std::vector<std::string> toolProficiencies;
-    std::vector<std::pair<std::vector<std::string>, unsigned short int>> toolProficienciesOptions;
+
+    void printData(){
+        LOG("Proficiency Data:");
+        LOG("Weapon proficiency:");
+        for(auto& wp : weaponProficiencies){
+            LOG(wp);
+        }
+        LOG("Armor proficiency:");
+        for(auto& ap : armorProficiencies){
+            LOG(ap);
+        }
+        LOG("Tool proficiency:");
+        for(auto& tp : toolProficiencies){
+            LOG(tp);
+        }
+    }
 
 };
 
@@ -184,6 +284,14 @@ struct ResilienceData{
     bool immune = false;
     bool hasAdvantage = false;
     bool hasResistance = false;
+
+    void printData(){
+        LOG("Resilience Data:");
+        LOG("Affliction:" + affliction);
+        LOG("Immune:" + std::to_string(immune));
+        LOG("hasAdvantage:" + std::to_string(hasAdvantage));
+        LOG("hasResistance:" + std::to_string(hasResistance));
+    }
 };
 
 struct DarkvisionData{
@@ -192,19 +300,31 @@ struct DarkvisionData{
     float dim_light_eq_dist = 0.0f;
     IlluminationType darkvision_eq = IlluminationType::Dark;
     float darkvision_eq_dist = 0.0f;
+
+    void printData(){
+        LOG("Darkvision data:");
+        LOG("hasDarkvision" + std::to_string(hasDarkvision));
+        LOG("dim_light_eq:" + illuminationTypeToString(dim_light_eq) + " dim_light_eq_dist:" + std::to_string(dim_light_eq_dist));
+        LOG("darkvision_eq:" + illuminationTypeToString(darkvision_eq) + " darkvision_eq_dist:" + std::to_string(darkvision_eq_dist));
+    }
 };
 
-struct AttributeModData{
+struct AbilityModData{
     std::pair<std::string, int> abilityMod;
-    AttributeModData() = default;
+    
+    void printData(){
+        LOG("Ability Mod Data:");
+        LOG("Ability:" + abilityMod.first + " mod:" + std::to_string(abilityMod.second));
+    }
     
 };
+
 
 struct RaceData{
 
     private:
 
-    std::vector<AttributeModData> attributeModData;
+    std::vector<AbilityModData> abilityModData;
     AgeData ageData;
     Alignment alignment;
     SizeData sizeData;
@@ -268,10 +388,10 @@ struct RaceData{
 
     
 
-    void addAttributeMod(const std::string& ability, int mod){
+    void addAbilityMod(const std::string& ability, int mod){
         bool modExists = false;
 
-        for(const auto& am : attributeModData){
+        for(const auto& am : abilityModData){
             if(am.abilityMod.first == ability){
                 modExists = true;
                 const_cast<std::pair<std::string, int>&>(am.abilityMod).second += mod;
@@ -280,10 +400,10 @@ struct RaceData{
         }
 
         if(!modExists){
-            AttributeModData newMod;
+            AbilityModData newMod;
             newMod.abilityMod = {ability, mod};
 
-            attributeModData.push_back(newMod);
+            abilityModData.push_back(newMod);
         }
 
     }
@@ -344,6 +464,7 @@ struct RaceData{
 
         if(!resilienceExists){
             ResilienceData data;
+            data.affliction = affliction;
             data.immune = immune;
             data.hasAdvantage = hasAdvantage;
             data.hasResistance = hasResistance;
@@ -351,6 +472,44 @@ struct RaceData{
             resilienceDataVector.push_back(data);
         }
     }
+
+    void printData(){
+
+        //----ability mod data
+        for(auto& amd : abilityModData){
+            amd.printData();
+        }
+
+        //----Age data
+        ageData.printData();
+
+        //------Alignment
+        LOG("Alignment:" + alignmentToString(alignment));
+
+        //------Size
+        sizeData.printData();
+        
+        //-----Speed
+        LOG("Speed Data:" + std::to_string(speed));
+
+        //-----Languages
+        for(auto& lg : languagesVector){
+            lg.printData();
+        }
+
+        //------Proficiency
+        proficiencyData.printData();
+
+        //------resilience
+        for(auto& rs : resilienceDataVector){
+            rs.printData();
+        }
+
+        //-------Darkvision
+        darkvisionData.printData();
+
+    }
+
 
 };
 
@@ -360,32 +519,11 @@ std::vector<std::pair<std::string, RaceData>> g_racesVector;
 
 
 Alignment stringToAlignment(const std::string& alignmentStr){
-    if(alignmentStr == "lawful_good"){
-        return Alignment::lawful_good;
-    }
-    else if(alignmentStr == "lawful_neutral"){
-        return Alignment::lawful_neutral;
-    }
-    else if(alignmentStr == "lawful_evil"){
-        return Alignment::lawful_evil;
-    }
-    else if(alignmentStr == "neutral_good"){
-        return Alignment::neutral_good;
-    }
-    else if(alignmentStr == "neutral_neutral"){
-        return Alignment::neutral_neutral;
-    }
-    else if(alignmentStr == "neutral_evil"){
-        return Alignment::neutral_evil;
-    }
-    else if(alignmentStr == "chaotic_good"){
-        return Alignment::chaotic_good;
-    }
-    else if(alignmentStr == "chaotic_neutral"){
-        return Alignment::chaotic_neutral;
-    }
-    else if(alignmentStr == "chaotic_evil"){
-        return Alignment::chaotic_evil;
+    
+    for(auto& mp : alignmentStrMap){
+        if(mp.second == alignmentStr){
+            return mp.first;
+        }
     }
     
     throw std::runtime_error("Invalid alignment string: " + alignmentStr);
@@ -394,25 +532,12 @@ Alignment stringToAlignment(const std::string& alignmentStr){
 }
 
 SizeCategory stringToSizeCategory(const std::string& sizeCategoryStr){
-    if(sizeCategoryStr == "tiny"){
-        return SizeCategory::Tiny;
+    for(auto& mp : sizeCategoryStrMap){
+        if(mp.second == sizeCategoryStr){
+            return mp.first;
+        }
     }
-    else if(sizeCategoryStr == "small"){
-        return SizeCategory::Small;
-    }
-    else if(sizeCategoryStr == "medium"){
-        return SizeCategory::Medium;
-    }
-    else if(sizeCategoryStr == "large"){
-        return SizeCategory::Large;
-    }
-    else if(sizeCategoryStr == "huge"){
-        return SizeCategory::Huge;
-    }
-    else if(sizeCategoryStr == "gargantuan"){
-        return SizeCategory::Garg;
-    }
-
+    
     throw std::runtime_error("Invalid size category string: " + sizeCategoryStr);
 
     return SizeCategory::Medium;
