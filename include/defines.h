@@ -6,7 +6,13 @@
 #include <stdexcept>
 #include <iostream>
 
+#define ABILITY_SCORE_MAX 20
+
+#define DEFAULT_PARAM_DIE 8
+
 #define LOG(text) do {std::cout << text << std::endl;} while(0)
+
+class Character; //Forward declaration
 
 //------Vector of Abilities
 
@@ -181,63 +187,20 @@ const std::vector<std::pair<IlluminationType, std::string>> illumincationTypeStr
     {IlluminationType::Dark, "dark"}
 };
 
-std::string alignmentToString(Alignment alignment){
-    
-    for(auto& mp : alignmentStrMap){
-        if(mp.first == alignment){
-            return mp.second;
-        }
-    }
-    
-    throw std::runtime_error("Invalid alignment");
-
-    return "";
-}
-
-std::string sizeCategoryToString(SizeCategory sz){
-    for(auto& mp : sizeCategoryStrMap){
-        if(mp.first == sz){
-            return mp.second;
-        }
-    }
-
-    throw std::runtime_error("Invalid size category");
-
-    return "";
-}
-
-std::string illuminationTypeToString(IlluminationType it){
-    for(auto& mp : illumincationTypeStrMap){
-        if(mp.first == it){
-            return mp.second;
-        }
-    }
-
-    throw std::runtime_error("Invalid illumincation type");
-
-    return "";
-}
-
 struct AgeData{
     unsigned short int maturityAge;
     unsigned short int avgLifespan;
 
-    void printData(){
-
-        LOG("Age Data:");
-        LOG("maturity:" + std::to_string(maturityAge) + " avgLifespan:" + std::to_string(avgLifespan));
-    }
+    void printData();
+    void applyData(Character* t_character);
 }; 
 
 struct SizeData{
     SizeCategory category;
     std::pair<float, float> dimensions; //height in meters, weight in kgs
 
-    void printData(){
-        LOG("Size data:");
-        LOG("category:" + sizeCategoryToString(category));
-        LOG("height:" + std::to_string(dimensions.first) + " weight:" + std::to_string(dimensions.second));
-    }
+    void printData();
+    void applyData(Character* t_character);
 };
 
 struct LanguageData{
@@ -246,13 +209,8 @@ struct LanguageData{
     bool read = false;
     bool write = false;
 
-    void printData(){
-        LOG("Language Data:" << std::endl);
-        LOG("Language:" + language);
-        LOG("speak:" + std::to_string(speak));
-        LOG("read:" + std::to_string(read));
-        LOG("write:" + std::to_string(write));
-    }
+    void printData();
+    void applyData(Character* t_character);
 };
 
 struct ProficiencyData{
@@ -261,21 +219,8 @@ struct ProficiencyData{
     std::vector<std::string> armorProficiencies;
     std::vector<std::string> toolProficiencies;
 
-    void printData(){
-        LOG("Proficiency Data:");
-        LOG("Weapon proficiency:");
-        for(auto& wp : weaponProficiencies){
-            LOG(wp);
-        }
-        LOG("Armor proficiency:");
-        for(auto& ap : armorProficiencies){
-            LOG(ap);
-        }
-        LOG("Tool proficiency:");
-        for(auto& tp : toolProficiencies){
-            LOG(tp);
-        }
-    }
+    void printData();
+    void applyData(Character* t_character);
 
 };
 
@@ -285,13 +230,8 @@ struct ResilienceData{
     bool hasAdvantage = false;
     bool hasResistance = false;
 
-    void printData(){
-        LOG("Resilience Data:");
-        LOG("Affliction:" + affliction);
-        LOG("Immune:" + std::to_string(immune));
-        LOG("hasAdvantage:" + std::to_string(hasAdvantage));
-        LOG("hasResistance:" + std::to_string(hasResistance));
-    }
+    void printData();
+    void applyData(Character* t_character);
 };
 
 struct DarkvisionData{
@@ -301,263 +241,24 @@ struct DarkvisionData{
     IlluminationType darkvision_eq = IlluminationType::Dark;
     float darkvision_eq_dist = 0.0f;
 
-    void printData(){
-        LOG("Darkvision data:");
-        LOG("hasDarkvision" + std::to_string(hasDarkvision));
-        LOG("dim_light_eq:" + illuminationTypeToString(dim_light_eq) + " dim_light_eq_dist:" + std::to_string(dim_light_eq_dist));
-        LOG("darkvision_eq:" + illuminationTypeToString(darkvision_eq) + " darkvision_eq_dist:" + std::to_string(darkvision_eq_dist));
-    }
+    void printData();
+    void applyData(Character* t_character);
 };
 
 struct AbilityModData{
     std::pair<std::string, int> abilityMod;
     
-    void printData(){
-        LOG("Ability Mod Data:");
-        LOG("Ability:" + abilityMod.first + " mod:" + std::to_string(abilityMod.second));
-    }
+    void printData();
+    void applyData(Character* t_character);
     
 };
 
-
-struct RaceData{
-
-    private:
-
-    std::vector<AbilityModData> abilityModData;
-    AgeData ageData;
-    Alignment alignment;
-    SizeData sizeData;
-    float speed;
-    std::vector<LanguageData> languagesVector;
-    ProficiencyData proficiencyData;
-    std::vector<ResilienceData> resilienceDataVector;
-    DarkvisionData darkvisionData;
-
-    public:
-
-    //-----replace data
-
-    void setAgeData(unsigned short int maturityAge, unsigned short int avgLifespan){
-        ageData.maturityAge = maturityAge;
-        ageData.avgLifespan = avgLifespan;
-    }
-
-    void setAlignment(Alignment t_alignment){
-        alignment = t_alignment;
-    }
-
-    void setSizeData(const SizeCategory category, float height, float weight){
-        sizeData.category = category;
-        sizeData.dimensions = {height, weight};
-    }
-
-    void setSpeed(float t_speed){
-        speed = t_speed;
-    }
-
-    void setDarkvisionData(bool hasDarkvision, std::pair<IlluminationType, float> dim_light_eq, std::pair<IlluminationType, float> darkvision_eq){
-        darkvisionData.hasDarkvision = hasDarkvision;
-        darkvisionData.dim_light_eq = dim_light_eq.first;
-        darkvisionData.dim_light_eq_dist = dim_light_eq.second;
-        darkvisionData.darkvision_eq = darkvision_eq.first;
-        darkvisionData.darkvision_eq_dist = darkvision_eq.second;
-    }
-
-
-    //-----additive data
-
-    void setProficiencyData(const ProficiencyType t_type, const std::string& proficiency){
+struct ParamModData{
+    std::pair<std::string, int> paramMod;
     
-        switch (t_type)
-        {
-        case ProficiencyType::Weapon:
-            proficiencyData.weaponProficiencies.push_back(proficiency);
-            break;
-        case ProficiencyType::Armor:
-            proficiencyData.armorProficiencies.push_back(proficiency);
-            break;
-        case ProficiencyType::Tool:
-            proficiencyData.toolProficiencies.push_back(proficiency);
-            break;
-        default:
-            break;
-        }
+    void printData();
+    void applyData(Character* t_character);
     
-    }
-
-    
-
-    void addAbilityMod(const std::string& ability, int mod){
-        bool modExists = false;
-
-        for(const auto& am : abilityModData){
-            if(am.abilityMod.first == ability){
-                modExists = true;
-                const_cast<std::pair<std::string, int>&>(am.abilityMod).second += mod;
-                break;
-            }
-        }
-
-        if(!modExists){
-            AbilityModData newMod;
-            newMod.abilityMod = {ability, mod};
-
-            abilityModData.push_back(newMod);
-        }
-
-    }
-
-    void addLanguageProficiency(const std::string& language, bool speak, bool read, bool write){
-    
-        bool languageExists = false;
-
-        for(const auto& lang : languagesVector){
-            if(lang.language == language){
-                languageExists = true;
-
-                if(speak){
-                    const_cast<LanguageData&>(lang).speak = true;
-                }
-
-                if(read){
-                    const_cast<LanguageData&>(lang).read = true;
-                }
-                if(write){
-                    const_cast<LanguageData&>(lang).write = true;
-                }
-
-                break;
-            }
-        }
-
-        if(!languageExists){
-            LanguageData newLanguage;
-            newLanguage.language = language;
-            newLanguage.speak = speak;
-            newLanguage.read = read;
-            newLanguage.write = write;
-
-            languagesVector.push_back(newLanguage);
-        }
-    
-    }
-
-    void addResilience(const std::string& affliction, bool immune, bool hasAdvantage, bool hasResistance){
-        
-        bool resilienceExists = false;
-        for(const auto& res : resilienceDataVector){
-            if(res.affliction == affliction){
-                resilienceExists = true;
-                if(immune){
-                    const_cast<ResilienceData&>(res).immune = true;
-                }
-                if(hasAdvantage){
-                    const_cast<ResilienceData&>(res).hasAdvantage = true;
-                }
-                if(hasResistance){
-                    const_cast<ResilienceData&>(res).hasResistance = true;
-                }
-                break;
-            }
-        }
-
-        if(!resilienceExists){
-            ResilienceData data;
-            data.affliction = affliction;
-            data.immune = immune;
-            data.hasAdvantage = hasAdvantage;
-            data.hasResistance = hasResistance;
-
-            resilienceDataVector.push_back(data);
-        }
-    }
-
-    void printData(){
-
-        //----ability mod data
-        for(auto& amd : abilityModData){
-            amd.printData();
-        }
-
-        //----Age data
-        ageData.printData();
-
-        //------Alignment
-        LOG("Alignment:" + alignmentToString(alignment));
-
-        //------Size
-        sizeData.printData();
-        
-        //-----Speed
-        LOG("Speed Data:" + std::to_string(speed));
-
-        //-----Languages
-        for(auto& lg : languagesVector){
-            lg.printData();
-        }
-
-        //------Proficiency
-        proficiencyData.printData();
-
-        //------resilience
-        for(auto& rs : resilienceDataVector){
-            rs.printData();
-        }
-
-        //-------Darkvision
-        darkvisionData.printData();
-
-    }
-
-
 };
-
-//------Vector of Races
-
-std::vector<std::pair<std::string, RaceData>> g_racesVector;
-
-
-Alignment stringToAlignment(const std::string& alignmentStr){
-    
-    for(auto& mp : alignmentStrMap){
-        if(mp.second == alignmentStr){
-            return mp.first;
-        }
-    }
-    
-    throw std::runtime_error("Invalid alignment string: " + alignmentStr);
-
-    return Alignment::neutral_neutral;
-}
-
-SizeCategory stringToSizeCategory(const std::string& sizeCategoryStr){
-    for(auto& mp : sizeCategoryStrMap){
-        if(mp.second == sizeCategoryStr){
-            return mp.first;
-        }
-    }
-    
-    throw std::runtime_error("Invalid size category string: " + sizeCategoryStr);
-
-    return SizeCategory::Medium;
-}
-
-IlluminationType stringToIlluminationType(const std::string& illuminationTypeStr){
-
-    if(illuminationTypeStr == "normal"){
-        return IlluminationType::Normal;
-    }
-    else if(illuminationTypeStr == "dim"){
-        return IlluminationType::Dim;
-    }
-    else if(illuminationTypeStr == "dark"){
-        return IlluminationType::Dark;
-    }
-
-    throw std::runtime_error("Invalid illumination category string: " + illuminationTypeStr);
-
-    return IlluminationType::Normal;
-}
 
 

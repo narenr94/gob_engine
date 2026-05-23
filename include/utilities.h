@@ -4,11 +4,6 @@
 
 #include <memory>
 
-class Race;
-class Character;
-
-std::unique_ptr<Race> raceFactory(const std::string& t_race, Character* t_character, CustomRaceData* t_customData = nullptr);
-
 short int calculateAbilityModifier(const unsigned short int t_abilityScore) {
     double raw = (static_cast<int>(t_abilityScore) - 10) / 2.0;
     return static_cast<short int>(std::floor(raw));
@@ -80,4 +75,83 @@ Level incrementLevel(Level t_currLevel){
             break;
         
     }
+}
+
+std::string alignmentToString(Alignment alignment){
+    
+    for(auto& mp : alignmentStrMap){
+        if(mp.first == alignment){
+            return mp.second;
+        }
+    }
+    
+    throw std::runtime_error("Invalid alignment");
+
+    return "";
+}
+
+std::string sizeCategoryToString(SizeCategory sz){
+    for(auto& mp : sizeCategoryStrMap){
+        if(mp.first == sz){
+            return mp.second;
+        }
+    }
+
+    throw std::runtime_error("Invalid size category");
+
+    return "";
+}
+
+std::string illuminationTypeToString(IlluminationType it){
+    for(auto& mp : illumincationTypeStrMap){
+        if(mp.first == it){
+            return mp.second;
+        }
+    }
+
+    throw std::runtime_error("Invalid illumincation type");
+
+    return "";
+}
+
+Alignment stringToAlignment(const std::string& alignmentStr){
+    
+    for(auto& mp : alignmentStrMap){
+        if(mp.second == alignmentStr){
+            return mp.first;
+        }
+    }
+    
+    throw std::runtime_error("Invalid alignment string: " + alignmentStr);
+
+    return Alignment::neutral_neutral;
+}
+
+SizeCategory stringToSizeCategory(const std::string& sizeCategoryStr){
+    for(auto& mp : sizeCategoryStrMap){
+        if(mp.second == sizeCategoryStr){
+            return mp.first;
+        }
+    }
+    
+    throw std::runtime_error("Invalid size category string: " + sizeCategoryStr);
+
+    return SizeCategory::Medium;
+}
+
+IlluminationType stringToIlluminationType(const std::string& illuminationTypeStr){
+
+    if(illuminationTypeStr == "normal"){
+        return IlluminationType::Normal;
+    }
+    else if(illuminationTypeStr == "dim"){
+        return IlluminationType::Dim;
+    }
+    else if(illuminationTypeStr == "dark"){
+        return IlluminationType::Dark;
+    }
+
+    throw std::runtime_error("Invalid illumination category string: " + illuminationTypeStr);
+
+    return IlluminationType::Normal;
 }

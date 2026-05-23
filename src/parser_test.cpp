@@ -1,4 +1,4 @@
-#include "jsonRaceParser.h"
+#include "raceData.h"
 
 #define RACE_JSON_DIR "/home/user/gob_engine/game_data/race"
 

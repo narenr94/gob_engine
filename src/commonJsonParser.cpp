@@ -1,10 +1,8 @@
-#pragma once
+#include "commonJsonParser.h"
 
-#include "defines.h"
-#include "jsonCommonParser.h"
+#include "raceData.h"
 
-#include <string>
-#include <filesystem>
+#include "utilities.h"
 
 void extractAndApplyAbilityMods(json& j, RaceData& raceData){
     if(j.contains("ability_mods")){
@@ -12,6 +10,16 @@ void extractAndApplyAbilityMods(json& j, RaceData& raceData){
             std::string ability = mod["ability"];
             int value = mod["mod"];
             raceData.addAbilityMod(ability, value);
+        }
+    }
+}
+
+void extractAndApplyParamMods(json& j, RaceData& raceData){
+    if(j.contains("param_mod")){
+        for (const auto& mod : j["param_mod"]) {
+            std::string param = mod["param"];
+            int value = mod["mod"];
+            raceData.addParamMod(param, value);
         }
     }
 }
@@ -113,92 +121,4 @@ void extractAndApplyProficiencyData(json& j, RaceData& raceData){
             }
         }
     }
-}
-
-void getRaceDataFrom(const std::string& t_racePath, RaceData& raceData){
-    
-    json j;
-    if(readJsonFile(t_racePath, j)){
-
-        if(j.contains("base_race")){
-
-            if(j["base_race"].is_string()){
-                std::string baseRaceName = j["base_race"];
-                std::string baseRacePath = std::filesystem::path(t_racePath).parent_path().string() + "/" + baseRaceName + ".json";
-                getRaceDataFrom(baseRacePath, raceData);
-            }
-            
-            //ability mods
-            extractAndApplyAbilityMods(j, raceData);
-
-            //age
-            extractAndApplyAgeData(j, raceData);
-
-            //alignment
-            extractAndApplyAlignmentData(j, raceData);
-
-            //size
-            extractAndApplySizeData(j, raceData);
-
-            //speed
-            extractAndApplySpeedData(j, raceData);
-
-            //languages
-            extractAndApplyLanguagesData(j, raceData);
-
-            //darkvision
-            extractAndApplyDarkVisionData(j, raceData);
-
-            //resilience
-            extractAndApplyResilienceData(j, raceData);
-
-            //proficiencies
-            extractAndApplyProficiencyData(j, raceData);
-
-            //todo : options and traits
-
-        }
-        else{
-            throw std::runtime_error("base_race key not found in race JSON file:" + t_racePath);
-        }
-
-    }
-}
-
-void findAllRaces(const std::string& t_racePath){
-
-    if (!std::filesystem::exists(t_racePath) || !std::filesystem::is_directory(t_racePath)) {
-        return;
-    }
-
-    for (const auto& entry : std::filesystem::directory_iterator(t_racePath)) {
-        if (entry.is_regular_file() && entry.path().extension() == ".json") {
-            
-            json j;
-            if (readJsonFile(entry.path().string(), j)){
-                if(j.contains("name")){
-
-                    if(j.contains("is_abstract")){
-
-                        if(j["is_abstract"] == false){
-                            RaceData raceData;
-                            getRaceDataFrom(entry.path().string(), raceData);
-                            g_racesVector.push_back({j["name"], raceData});
-                        }
-
-                    }
-                    else{
-                        throw std::runtime_error("Key 'is_abstract' not found in race JSON file:" + entry.path().string());
-                    }
-
-                }
-                else{
-
-                    throw std::runtime_error("Key 'name' not found in race JSON file:" + entry.path().string());
-                }
-            }
-            
-        }
-    }
-
 }
