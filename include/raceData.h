@@ -188,10 +188,6 @@ struct RaceData{
 
 };
 
-//------Vector of Races
-
-std::vector<std::pair<std::string, RaceData>> g_racesVector;
-
 
 //----------------------
 
@@ -248,42 +244,4 @@ void getRaceDataFrom(const std::string& t_racePath, RaceData& raceData){
         }
 
     }
-}
-
-void findAllRaces(const std::string& t_racePath){
-
-    if (!std::filesystem::exists(t_racePath) || !std::filesystem::is_directory(t_racePath)) {
-        return;
-    }
-
-    for (const auto& entry : std::filesystem::directory_iterator(t_racePath)) {
-        if (entry.is_regular_file() && entry.path().extension() == ".json") {
-            
-            json j;
-            if (readJsonFile(entry.path().string(), j)){
-                if(j.contains("name")){
-
-                    if(j.contains("is_abstract")){
-
-                        if(j["is_abstract"] == false){
-                            RaceData raceData;
-                            getRaceDataFrom(entry.path().string(), raceData);
-                            g_racesVector.push_back({j["name"], raceData});
-                        }
-
-                    }
-                    else{
-                        throw std::runtime_error("Key 'is_abstract' not found in race JSON file:" + entry.path().string());
-                    }
-
-                }
-                else{
-
-                    throw std::runtime_error("Key 'name' not found in race JSON file:" + entry.path().string());
-                }
-            }
-            
-        }
-    }
-
 }

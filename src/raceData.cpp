@@ -16,13 +16,13 @@ void RaceData::applyRaceData(Character* t_character){
     ageData.applyData(t_character);
 
     //------Alignment
-    t_character->setAlignment(alignment);
+    t_character->updateAlignment(alignment);
 
     //------Size
     sizeData.applyData(t_character);
     
     //-----Speed
-    t_character->setSpeed(speed);
+    t_character->updateSpeed(speed);
 
     //-----Languages
     for(auto& lg : languagesVector){

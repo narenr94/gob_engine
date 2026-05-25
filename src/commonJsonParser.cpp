@@ -122,3 +122,83 @@ void extractAndApplyProficiencyData(json& j, RaceData& raceData){
         }
     }
 }
+
+std::vector<std::string> extractAndApplyAbilities(const std::string& t_abilityPath){
+    json j;
+    std::vector<std::string> abilitiesVector;
+    if(readJsonFile(t_abilityPath, j)){
+        if(j.contains("abilities") && j["abilities"].is_array()){
+            for(const auto& ability : j["abilities"]){
+                abilitiesVector.push_back(ability);
+            }
+        }
+        else{
+            throw std::runtime_error("Key 'abilities' not found or is not an array in abilities JSON file:" + t_abilityPath);
+        }
+    }
+    else{
+        throw std::runtime_error("File not found:" + t_abilityPath);
+    }
+
+    return abilitiesVector;
+}
+
+std::vector<std::string> extractAndApplyParams(const std::string& t_paramPath){
+    json j;
+    std::vector<std::string> paramsVector;
+    if(readJsonFile(t_paramPath, j)){
+        if(j.contains("params") && j["params"].is_array()){
+            for(const auto& param : j["params"]){
+                paramsVector.push_back(param);
+            }
+        }
+        else{
+            throw std::runtime_error("Key 'params' not found or is not an array in params JSON file:" + t_paramPath);
+        }
+    }
+    else{
+        throw std::runtime_error("File not found:" + t_paramPath);
+    }
+
+    return paramsVector;
+}
+
+
+std::vector<std::string> findAllRaces(const std::string& t_racePath){
+
+    std::vector<std::string> racesVector;
+
+    if (!std::filesystem::exists(t_racePath) || !std::filesystem::is_directory(t_racePath)) {
+        return racesVector;
+    }
+
+    for (const auto& entry : std::filesystem::directory_iterator(t_racePath)) {
+        if (entry.is_regular_file() && entry.path().extension() == ".json") {
+            
+            json j;
+            if (readJsonFile(entry.path().string(), j)){
+                if(j.contains("name")){
+
+                    if(j.contains("is_abstract")){
+
+                        if(j["is_abstract"] == false){
+                            racesVector.push_back(j["name"]);
+                        }
+
+                    }
+                    else{
+                        throw std::runtime_error("Key 'is_abstract' not found in race JSON file:" + entry.path().string());
+                    }
+
+                }
+                else{
+
+                    throw std::runtime_error("Key 'name' not found in race JSON file:" + entry.path().string());
+                }
+            }
+            
+        }
+    }
+
+    return racesVector;
+}

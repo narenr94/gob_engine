@@ -4,6 +4,7 @@
 #include "dice.h"
 #include "race.h"
 #include "characterClass.h"
+#include "gameData.h"
 #include "utilities.h"
 
 #include <string>
@@ -28,6 +29,7 @@ class Character{
         unsigned int m_expPoints;
 
         std::unique_ptr<Race> m_race;
+        
         std::vector<std::unique_ptr<CharacterClass>> m_class;
 
         Alignment m_alignment;
@@ -35,6 +37,8 @@ class Character{
         AgeData m_age;
 
         SizeData m_size;
+
+        float m_speed;
 
         std::vector<LanguageData> m_languageData;
 
@@ -54,13 +58,17 @@ class Character{
         //----------------Utility
 
         void assignCharacterParams(){
-            for(auto& cp : g_characterParamsVector){
+            GameData &gameData = GameData::getInstance();
+
+            for(auto& cp : gameData.getParamsVector()){
                 m_paramsPairMap[cp] = {0, 0};
             }
         }
 
         void assignAbilities(){
-            for(auto& ab : g_abilitiesVector){                
+            GameData &gameData = GameData::getInstance();
+
+            for(auto& ab : gameData.getAbilitiesVector()){                
 
                 m_abilitiesMap[ab] = {0, 0};
             }
@@ -148,6 +156,10 @@ class Character{
             return m_size;
         }
 
+        float getSpeed() const {
+            return m_speed;
+        }
+
         std::vector<LanguageData> getLanguageData() const {
             return m_languageData;
         }
@@ -210,7 +222,7 @@ class Character{
             return m_alignment;
         }
 
-        
+
         //----------------Sets
 
         void setAgeData(const AgeData& t_ageData){
@@ -404,6 +416,10 @@ class Character{
 
         void updateAlignment(Alignment t_alignment){
             m_alignment = t_alignment;
+        }
+
+        void updateSpeed(float t_speed){
+            m_speed = t_speed;
         }
 
 };

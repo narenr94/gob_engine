@@ -22,12 +22,7 @@ class Race {
         m_character(t_character), m_race(t_race)
         {
 
-            for(auto& rc : g_racesVector){
-                if(rc.first == m_race){
-                    m_raceData = &rc.second;
-                    break;
-                }
-            }
+            m_raceData = &GameData::getInstance().getRaceData(m_race);
 
         }
 
