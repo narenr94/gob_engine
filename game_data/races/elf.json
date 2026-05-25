@@ -9,7 +9,7 @@
         }
     ],
     "age" : {
-        "mature" : 18,
+        "maturity" : 18,
         "life_span" : 750        
     },
     "alignment" : "chaotic_good",

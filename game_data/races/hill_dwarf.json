@@ -8,7 +8,7 @@
             "mod" : 1
         }
     ],
-    "param_mod" : [
+    "param_mods" : [
         {
             "param" : "hit_points",
             "mod" : 1

@@ -98,6 +98,55 @@ enum class ItemUtility{
     NonCombat
 };
 
+//------JSON Keys
+
+enum class JsonKeys{
+    name,
+    is_abstract,
+    base_race,
+    ability_mods,
+    param_mods,
+    ability,
+    param,
+    mod,
+    age,
+    maturity,
+    life_span,
+    alignment,
+    size,
+    category,
+    avg_height_m,
+    avg_weight_kg,
+    speed_mps,
+    languages,
+    speak,
+    read,
+    write,
+    dark_vision,
+    has_darkvision,
+    dim_light_eq,
+    as_ambient,
+    distance_m,
+    darkness_eq,
+    resilience,
+    affliction,
+    immune,
+    has_advantage,
+    has_resistance,
+    proficiency,
+    weapons,
+    tools,
+    armors,
+    skills,
+    options,
+    choose,
+    all,
+    choices,
+    sleep_duration_hrs,
+    abilities,
+    params
+};
+
 
 //--------Lookup Tables
 
@@ -182,6 +231,53 @@ const std::vector<std::pair<ProficiencyType, std::string>> proficiencyTypeStrMap
     {ProficiencyType::Armors, "armors"},
     {ProficiencyType::Tools, "tools"},
     {ProficiencyType::Skills, "skills"}
+};
+
+const std::vector<std::pair<JsonKeys, std::string>> jsonKeysStrMap = {
+    {JsonKeys::name, "name"},
+    {JsonKeys::is_abstract, "is_abstract"},
+    {JsonKeys::base_race, "base_race"},
+    {JsonKeys::ability_mods, "ability_mods"},
+    {JsonKeys::param_mods, "param_mods"},
+    {JsonKeys::ability, "ability"},
+    {JsonKeys::param, "param"},
+    {JsonKeys::mod, "mod"},
+    {JsonKeys::age, "age"},
+    {JsonKeys::maturity, "maturity"},
+    {JsonKeys::life_span, "life_span"},
+    {JsonKeys::alignment, "alignment"},
+    {JsonKeys::size, "size"},
+    {JsonKeys::category, "category"},
+    {JsonKeys::avg_height_m, "avg_height_m"},
+    {JsonKeys::avg_weight_kg, "avg_weight_kg"},
+    {JsonKeys::speed_mps, "speed_mps"},
+    {JsonKeys::languages, "languages"},
+    {JsonKeys::speak, "speak"},
+    {JsonKeys::read, "read"},
+    {JsonKeys::write, "write"},
+    {JsonKeys::dark_vision, "dark_vision"},
+    {JsonKeys::has_darkvision, "has_darkvision"},
+    {JsonKeys::dim_light_eq, "dim_light_eq"},
+    {JsonKeys::as_ambient, "as_ambient"},
+    {JsonKeys::distance_m, "distance_m"},
+    {JsonKeys::darkness_eq, "darkness_eq"},
+    {JsonKeys::resilience, "resilience"},
+    {JsonKeys::affliction, "affliction"},
+    {JsonKeys::immune, "immune"},
+    {JsonKeys::has_advantage, "has_advantage"},
+    {JsonKeys::has_resistance, "has_resistance"},
+    {JsonKeys::proficiency, "proficiency"},
+    {JsonKeys::weapons, "weapons"},
+    {JsonKeys::tools, "tools"},
+    {JsonKeys::armors, "armors"},
+    {JsonKeys::skills, "skills"},
+    {JsonKeys::options, "options"},
+    {JsonKeys::choose, "choose"},
+    {JsonKeys::all, "all"},
+    {JsonKeys::choices, "choices"},
+    {JsonKeys::sleep_duration_hrs, "sleep_duration_hrs"},
+    {JsonKeys::abilities, "abilities"},
+    {JsonKeys::params, "params"}
 };
 
 struct AgeData{

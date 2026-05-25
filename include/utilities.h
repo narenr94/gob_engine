@@ -180,3 +180,26 @@ ProficiencyType stringToProficiencyType(const std::string& str){
     return ProficiencyType::Weapons;
     
 }
+
+std::string jsonKeyToString(JsonKeys jk){
+    for(auto& mp : jsonKeysStrMap){
+        if(mp.first == jk){
+            return mp.second;
+        }
+    }
+
+    throw std::runtime_error("Invalid JsonKeys enum value");
+    return "";
+}
+
+JsonKeys stringToJsonKeys(const std::string& str){
+    for(auto& mp : jsonKeysStrMap){
+        if(mp.second == str){
+            return mp.first;
+        }
+    }
+
+    throw std::runtime_error("Invalid JsonKeys string: " + str);
+    return JsonKeys::name;
+
+}
