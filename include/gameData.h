@@ -29,6 +29,10 @@ class GameData{
 
         std::vector<std::string> m_racesVector;
 
+        //------Vector of Languages
+
+        std::vector<std::string> m_languagesVector;
+
         GameData(const std::string& t_gameDataPath):
         m_gameDataPath(t_gameDataPath)
         {
@@ -38,12 +42,14 @@ class GameData{
             //todo : classes
 
             m_racesVector = findAllRaces(m_gameDataPath + "/races");
+
+            m_languagesVector = extractAllLanguages(m_gameDataPath + "/languages.json");
         }
 
     public:
 
-        static GameData& getInstance(const std::string& t_gameDataPath = "game_data"){
-            static GameData instance(t_gameDataPath);
+        static GameData* getInstance(const std::string& t_gameDataPath = "game_data"){
+            static GameData* instance = new GameData(t_gameDataPath);
             return instance;
         }
 
@@ -63,6 +69,10 @@ class GameData{
             return m_racesVector;
         }
 
-        RaceData getRaceData(const std::string& t_raceName) const;
+        std::vector<std::string> getLanguagesVector() const {
+            return m_languagesVector;
+        }
+
+        RaceData getRaceData(const std::string& t_raceName, bool enablePlayerInput) const;
 
 };

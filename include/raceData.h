@@ -22,6 +22,7 @@ struct RaceData{
     ProficiencyData proficiencyData;
     std::vector<ResilienceData> resilienceDataVector;
     DarkvisionData darkvisionData;
+    float sleepDurationHrs = 8.0f;
 
     public:
 
@@ -53,6 +54,10 @@ struct RaceData{
         darkvisionData.darkvision_eq_dist = darkvision_eq.second;
     }
 
+    void setSleepDuration(float duration){
+        sleepDurationHrs = duration;
+    }
+
 
     //-----additive data
 
@@ -60,15 +65,37 @@ struct RaceData{
     
         switch (t_type)
         {
-        case ProficiencyType::Weapon:
-            proficiencyData.weaponProficiencies.push_back(proficiency);
+        case ProficiencyType::Weapons:
+            for(const auto& wp : proficiencyData.weaponProficiencies){
+                if(wp == proficiency){
+                    return;
+                }
+            }
+            proficiencyData.weaponProficiencies.push_back(proficiency);      
             break;
-        case ProficiencyType::Armor:
+        case ProficiencyType::Armors:
+            for(const auto& ap : proficiencyData.armorProficiencies){
+                if(ap == proficiency){
+                    return;
+                }
+            }
             proficiencyData.armorProficiencies.push_back(proficiency);
             break;
-        case ProficiencyType::Tool:
+        case ProficiencyType::Tools:
+            for(const auto& tp : proficiencyData.toolProficiencies){
+                if(tp == proficiency){
+                    return;
+                }
+            }
             proficiencyData.toolProficiencies.push_back(proficiency);
             break;
+        case ProficiencyType::Skills:
+            for(const auto& sp : proficiencyData.skillProficiencies){
+                if(sp == proficiency){
+                    return;
+                }
+            }
+            proficiencyData.skillProficiencies.push_back(proficiency);
         default:
             break;
         }
@@ -193,7 +220,7 @@ struct RaceData{
 
 
 
-void getRaceDataFrom(const std::string& t_racePath, RaceData& raceData){
+void getRaceDataFrom(const std::string& t_racePath, RaceData& raceData, bool enablePlayerInput){
     
     json j;
     if(readJsonFile(t_racePath, j)){
@@ -203,7 +230,7 @@ void getRaceDataFrom(const std::string& t_racePath, RaceData& raceData){
             if(j["base_race"].is_string()){
                 std::string baseRaceName = j["base_race"];
                 std::string baseRacePath = std::filesystem::path(t_racePath).parent_path().string() + "/" + baseRaceName + ".json";
-                getRaceDataFrom(baseRacePath, raceData);
+                getRaceDataFrom(baseRacePath, raceData, enablePlayerInput);
             }
             
             //ability mods
@@ -235,6 +262,12 @@ void getRaceDataFrom(const std::string& t_racePath, RaceData& raceData){
 
             //proficiencies
             extractAndApplyProficiencyData(j, raceData);
+
+            //sleep duration
+            extractAndApplySleepDurationData(j, raceData);
+
+            //options
+            extractAndApplyOptionsData(j, raceData, enablePlayerInput);
 
             //todo : options and traits
 

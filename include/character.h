@@ -1,7 +1,7 @@
 #pragma once
 
 #include "defines.h"
-#include "dice.h"
+#include "randomize.h"
 #include "race.h"
 #include "characterClass.h"
 #include "gameData.h"
@@ -58,17 +58,17 @@ class Character{
         //----------------Utility
 
         void assignCharacterParams(){
-            GameData &gameData = GameData::getInstance();
+            GameData* gameData = GameData::getInstance();
 
-            for(auto& cp : gameData.getParamsVector()){
+            for(auto& cp : gameData->getParamsVector()){
                 m_paramsPairMap[cp] = {0, 0};
             }
         }
 
         void assignAbilities(){
-            GameData &gameData = GameData::getInstance();
+            GameData* gameData = GameData::getInstance();
 
-            for(auto& ab : gameData.getAbilitiesVector()){                
+            for(auto& ab : gameData->getAbilitiesVector()){                
 
                 m_abilitiesMap[ab] = {0, 0};
             }
@@ -284,6 +284,16 @@ class Character{
                     m_proficiencyData.toolProficiencies.push_back(item);
                 }
             }
+
+            existingItems.clear();
+
+            existingItems.insert(m_proficiencyData.skillProficiencies.begin(), m_proficiencyData.skillProficiencies.end());
+            for (const auto& item : t_proficiencyData.skillProficiencies) {
+                if (existingItems.insert(item).second) { 
+                    m_proficiencyData.skillProficiencies.push_back(item);
+                }
+            }
+
         }
 
         void addResilienceData(const ResilienceData& t_resilienceData){

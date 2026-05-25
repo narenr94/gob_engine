@@ -58,7 +58,8 @@
         "proficiency" : {
                 "tools" : {
                     "choose" : 1,
-                    "options" : ["smith_tools", "brewer_tools", "mason_tools"]
+                    "all" : false,
+                    "choices" : ["smith_tools", "brewer_tools", "mason_tools"]
             }
         }
     }

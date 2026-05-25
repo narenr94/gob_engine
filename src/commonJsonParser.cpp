@@ -4,6 +4,12 @@
 
 #include "utilities.h"
 
+#include "playerInput.h"
+
+#include "gameData.h"
+
+#include "randomize.h"
+
 void extractAndApplyAbilityMods(json& j, RaceData& raceData){
     if(j.contains("ability_mods")){
         for (const auto& mod : j["ability_mods"]) {
@@ -105,19 +111,25 @@ void extractAndApplyProficiencyData(json& j, RaceData& raceData){
     if(j.contains("proficiency")){
         if(j["proficiency"].contains("weapons")){
             for(const auto& wp : j["proficiency"]["weapons"]){
-                raceData.setProficiencyData(ProficiencyType::Weapon, wp);
+                raceData.setProficiencyData(ProficiencyType::Weapons, wp);
             }
         }
 
         if(j["proficiency"].contains("armors")){
             for(const auto& ar : j["proficiency"]["armors"]){
-                raceData.setProficiencyData(ProficiencyType::Armor, ar);
+                raceData.setProficiencyData(ProficiencyType::Armors, ar);
             }
         }
 
         if(j["proficiency"].contains("tools")){
             for(const auto& tl : j["proficiency"]["tools"]){
-                raceData.setProficiencyData(ProficiencyType::Tool, tl);
+                raceData.setProficiencyData(ProficiencyType::Tools, tl);
+            }
+        }
+
+        if(j["proficiency"].contains("skills")){
+            for(const auto& sk : j["proficiency"]["skills"]){
+                raceData.setProficiencyData(ProficiencyType::Skills, sk);
             }
         }
     }
@@ -201,4 +213,172 @@ std::vector<std::string> findAllRaces(const std::string& t_racePath){
     }
 
     return racesVector;
+}
+
+void extractAndApplySleepDurationData(json& j, RaceData& raceData){
+    if(j.contains("sleep_duration_hrs")){
+        float sleepDuration = j["sleep_duration_hrs"];
+        raceData.setSleepDuration(sleepDuration);
+    }
+}
+
+std::vector<std::string> getProficiencyChoices(json& j, const std::string& profType, bool enablePlayerInputs){
+
+    std::pair<std::vector<std::string>, unsigned short int> profOptions;
+
+    profOptions.second = j["options"]["proficiencies"][profType]["choose"].get<unsigned short int>();
+
+    if(j["options"]["proficiencies"][profType]["all"] == false){
+        profOptions.first = j["options"]["proficiencies"][profType]["choices"].get<std::vector<std::string>>();            
+    }
+    else{
+        //todo : after getting complete prof list
+    }
+
+    std::vector<std::string> chosenProficiencies;
+    
+    if(!profOptions.first.empty() && enablePlayerInputs){
+        if(enablePlayerInputs){
+            chosenProficiencies = getPlayerInputOptionChoices(profOptions.first, profOptions.second);
+        }
+        else{
+            chosenProficiencies = chooseRandomOptions(profOptions.first, profOptions.second);
+        }
+        
+    }
+
+    return chosenProficiencies;
+
+}
+
+void processProficiencyOptions(json& j, RaceData& raceData, bool enablePlayerInputs){
+
+    if(j["options"]["proficiencies"].contains(proficiencyTypeToString(ProficiencyType::Weapons))){
+
+        std::vector<std::string> choices = getProficiencyChoices(j, proficiencyTypeToString(ProficiencyType::Weapons), enablePlayerInputs);
+
+        for(auto&ch : choices){
+            raceData.setProficiencyData(ProficiencyType::Weapons, ch);
+        }
+            
+    }
+
+    if(j["options"]["proficiencies"].contains(proficiencyTypeToString(ProficiencyType::Armors))){
+
+        std::vector<std::string> choices = getProficiencyChoices(j, proficiencyTypeToString(ProficiencyType::Armors), enablePlayerInputs);
+
+        for(auto&ch : choices){
+            raceData.setProficiencyData(ProficiencyType::Armors, ch);
+        }
+        
+    }
+
+    if(j["options"]["proficiencies"].contains(proficiencyTypeToString(ProficiencyType::Tools))){
+
+        std::vector<std::string> choices = getProficiencyChoices(j, proficiencyTypeToString(ProficiencyType::Tools), enablePlayerInputs);
+
+        for(auto&ch : choices){
+            raceData.setProficiencyData(ProficiencyType::Tools, ch);
+        }
+        
+    }
+
+    if(j["options"]["proficiencies"].contains(proficiencyTypeToString(ProficiencyType::Skills))){
+
+        std::vector<std::string> choices = getProficiencyChoices(j, proficiencyTypeToString(ProficiencyType::Skills), enablePlayerInputs);
+
+        for(auto&ch : choices){
+            raceData.setProficiencyData(ProficiencyType::Skills, ch);
+        }
+        
+    }
+
+
+}
+
+void processLanguageOptions(json& j, RaceData& raceData, bool enablePlayerInputs){
+
+    std::pair<std::vector<std::string>, unsigned short int> langOptions;
+
+    langOptions.second = j["options"]["languages"]["choose"].get<unsigned short int>();
+
+    if(j["options"]["languages"]["all"] == false){
+        langOptions.first = j["options"]["languages"]["choices"].get<std::vector<std::string>>();            
+    }
+    else{
+        for(auto& lo : GameData::getInstance()->getLanguagesVector()){
+            langOptions.first.push_back(lo);
+        }
+    }
+
+    std::vector<std::string> chosenLanguages;
+    
+    if(!langOptions.first.empty()){
+        if(enablePlayerInputs){
+            chosenLanguages = getPlayerInputOptionChoices(langOptions.first, langOptions.second);
+        }
+        else{
+            chosenLanguages = chooseRandomOptions(langOptions.first, langOptions.second);
+        }
+        
+    }
+
+    bool lnSpeak = true;
+    bool lnRead = true;
+    bool lnWrite = true;
+
+    if(j["options"]["languages"].contains("speak")){
+        lnSpeak = j["options"]["languages"]["speak"];
+    }
+
+    if(j["options"]["languages"].contains("read")){
+        lnRead = j["options"]["languages"]["read"];
+    }
+
+    if(j["options"]["languages"].contains("write")){
+        lnWrite = j["options"]["languages"]["write"];
+    }
+
+    for(auto& ch : chosenLanguages){
+        raceData.addLanguageProficiency(ch, lnSpeak, lnRead, lnWrite);
+    }
+
+}
+
+void extractAndApplyOptionsData(json& j, RaceData& raceData, bool enablePlayerInputs){
+
+
+    if(j.contains("options")){
+        if(j["options"].contains("proficiencies")){
+            processProficiencyOptions(j, raceData, enablePlayerInputs);
+        }
+
+        if(j["options"].contains("languages")){
+            processLanguageOptions(j, raceData, enablePlayerInputs);
+        }
+            
+    }
+
+
+
+}
+
+std::vector<std::string> extractAllLanguages(const std::string& t_languagesPath){
+    json j;
+    std::vector<std::string> languagesVector;
+    if(readJsonFile(t_languagesPath, j)){
+        if(j.contains("languages") && j["languages"].is_array()){
+            for(const auto& language : j["languages"]){
+                languagesVector.push_back(language);
+            }
+        }
+        else{
+            throw std::runtime_error("Key 'languages' not found or is not an array in languages JSON file:" + t_languagesPath);
+        }
+    }
+    else{
+        throw std::runtime_error("File not found:" + t_languagesPath);
+    }
+
+    return languagesVector;
 }

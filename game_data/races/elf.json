@@ -55,6 +55,9 @@
             "immune" : true
         }
     ],
+    "proficiency" : {
+        "skills" :["perception"]
+    },
     "sleep_duration_hrs" : 4
 
 }

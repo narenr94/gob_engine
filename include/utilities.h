@@ -155,3 +155,28 @@ IlluminationType stringToIlluminationType(const std::string& illuminationTypeStr
 
     return IlluminationType::Normal;
 }
+
+std::string proficiencyTypeToString(ProficiencyType pt){
+    
+    for(auto& pft : proficiencyTypeStrMap){
+        if(pft.first == pt){
+            return pft.second;
+        }
+    }
+
+    throw std::runtime_error("Invalid ProficiencyType");
+    return "";
+
+}
+
+ProficiencyType stringToProficiencyType(const std::string& str){
+    for(auto& pft : proficiencyTypeStrMap){
+        if(pft.second == str){
+            return pft.first;
+        }
+    }
+
+    throw std::runtime_error("Invalid ProficiencyType string: " + str);
+    return ProficiencyType::Weapons;
+    
+}

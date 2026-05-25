@@ -14,10 +14,10 @@
     "options" : {
         "cantrips" : {
             "choose" : 1,
-            "option" : ["all"]
+            "all" : true
         },
         "languages" : {
-            "options" : ["all"],
+            "all" : true,
             "choose" : 1,
             "speak" : true,
             "read" : true,

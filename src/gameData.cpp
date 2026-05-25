@@ -1,11 +1,11 @@
 #include "gameData.h"
 #include "raceData.h"
 
-RaceData GameData::getRaceData(const std::string& t_raceName) const {
+RaceData GameData::getRaceData(const std::string& t_raceName, bool enablePlayerInput) const {
     for(auto& race : m_racesVector){
         if(race == t_raceName){
             RaceData data;
-            getRaceDataFrom(m_gameDataPath + "/races/" + race + ".json", data);
+            getRaceDataFrom(m_gameDataPath + "/races/" + race + ".json", data, enablePlayerInput);
             return data;
         }
     }

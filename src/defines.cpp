@@ -79,6 +79,10 @@ void ProficiencyData::printData(){
     for(const auto& tp : toolProficiencies){
         LOG(tp);
     }
+    LOG("Skill Proficiencies:");
+    for(const auto& op : skillProficiencies){
+        LOG(op);
+    }
 }
 
 void ResilienceData::printData(){

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "log.h"
+
 #include <vector>
 #include <string>
 #include <cmath>
@@ -10,21 +12,7 @@
 
 #define DEFAULT_PARAM_DIE 8
 
-#define LOG(text) do {std::cout << text << std::endl;} while(0)
-
 class Character; //Forward declaration
-
-//------Vector of Abilities
-
-std::vector<std::string> g_abilitiesVector;
-
-//------Vector of Character Params
-
-std::vector<std::string> g_characterParamsVector;
-
-//------Vector of Classes
-
-std::vector<std::string> g_classesVector;
 
 enum class SizeCategory{
     Tiny,
@@ -36,9 +24,10 @@ enum class SizeCategory{
 };
 
 enum class ProficiencyType{
-    Weapon,
-    Armor,
-    Tool
+    Weapons,
+    Armors,
+    Tools,
+    Skills
 };
 
 enum class IlluminationType{
@@ -187,6 +176,14 @@ const std::vector<std::pair<IlluminationType, std::string>> illumincationTypeStr
     {IlluminationType::Dark, "dark"}
 };
 
+
+const std::vector<std::pair<ProficiencyType, std::string>> proficiencyTypeStrMap = {
+    {ProficiencyType::Weapons, "weapons"},
+    {ProficiencyType::Armors, "armors"},
+    {ProficiencyType::Tools, "tools"},
+    {ProficiencyType::Skills, "skills"}
+};
+
 struct AgeData{
     unsigned short int maturityAge;
     unsigned short int avgLifespan;
@@ -218,6 +215,7 @@ struct ProficiencyData{
     std::vector<std::string> weaponProficiencies;
     std::vector<std::string> armorProficiencies;
     std::vector<std::string> toolProficiencies;
+    std::vector<std::string> skillProficiencies;
 
     void printData();
     void applyData(Character* t_character);
