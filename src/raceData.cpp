@@ -1,5 +1,6 @@
 #include "raceData.h"
 #include "character.h"
+#include "utilities.h"
 
 void RaceData::applyRaceData(Character* t_character){
     //----ability mod data

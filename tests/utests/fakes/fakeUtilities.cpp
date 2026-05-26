@@ -9,6 +9,7 @@ short int calculateAbilityModifier(const unsigned short int t_abilityScore) {
 
 Level incrementLevel(Level t_currLevel){
 
+    return Level::Lvl1;
     
 }
 

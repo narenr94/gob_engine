@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 set -e
 
@@ -30,25 +30,59 @@ PKG_CONFIG_PATH=${BUILD_DIR}/lib/pkgconfig cmake ../ -DCOVERAGE_ENABLED=ON -DCMA
 
 make
 
+# Disable exit on error for test execution
+set +e
+
 # Run all test executables
 echo ""
 echo "==================================="
 echo "Running All Tests..."
 echo "==================================="
 
+# Initialize counters and failed tests array
+TOTAL_TESTS=0
+PASSED_TESTS=0
+FAILED_TESTS=0
+FAILED_TEST_NAMES=()
+
 # Find and run all test executables (excluding googletest's own tests)
-find . -type f -executable -name "*Tests" -o -type f -executable -name "*Test" | while read test_exe; do
+while IFS= read -r test_exe; do
     # Skip googletest directory
     if [[ "$test_exe" != *"googletest"* ]]; then
         echo ""
         echo "Running: $test_exe"
         echo "-----------------------------------"
-        "$test_exe"
+        if "$test_exe"; then
+            ((PASSED_TESTS++))
+        else
+            ((FAILED_TESTS++))
+            FAILED_TEST_NAMES+=("$test_exe")
+        fi
+        ((TOTAL_TESTS++))
     fi
-done
+done < <(find . -type f -executable \( -name "*Tests" -o -name "*Test" \))
 
+# Print summary
 echo ""
 echo "==================================="
-echo "All Tests Completed"
+echo "TEST SUMMARY"
 echo "==================================="
+echo "Total Tests Run: $TOTAL_TESTS"
+echo "Total Successes: $PASSED_TESTS"
+echo "Total Failures: $FAILED_TESTS"
 
+if [ $FAILED_TESTS -gt 0 ]; then
+    echo ""
+    echo "Failed Tests:"
+    for failed_test in "${FAILED_TEST_NAMES[@]}"; do
+        echo "  - $failed_test"
+    done
+    echo "==================================="
+    exit 1
+else
+    echo "==================================="
+    echo "All Tests Passed Successfully!"
+    echo "==================================="
+fi
+
+echo ""

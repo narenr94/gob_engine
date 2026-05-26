@@ -14,5 +14,12 @@ function(utest_run_add test_suite)
 endfunction()
 
 add_subdirectory(gameData)
+add_subdirectory(commonJsonParser)
+add_subdirectory(defines)
+add_subdirectory(log)
+add_subdirectory(playerInput)
+add_subdirectory(raceData)
+add_subdirectory(randomize)
+add_subdirectory(utilities)
 
 
