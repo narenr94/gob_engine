@@ -4,9 +4,6 @@
 
 #include <vector>
 #include <string>
-#include <cmath>
-#include <stdexcept>
-#include <iostream>
 
 #define ABILITY_SCORE_MAX 20
 

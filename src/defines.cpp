@@ -58,7 +58,7 @@ void ParamModData::printData(){
 }
 
 void LanguageData::printData(){
-    LOG("Language Data:" << std::endl);
+    LOG("Language Data:");
     LOG("Language:" + language);
     LOG("speak:" + std::to_string(speak));
     LOG("read:" + std::to_string(read));

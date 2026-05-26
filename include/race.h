@@ -1,7 +1,6 @@
 #pragma once
 
-#include "defines.h"
-#include "raceData.h"
+#include <string>
 
 class Character; //Forward declaration
 
@@ -13,26 +12,15 @@ class Race {
 
     protected:
 
-        virtual void raceBenifitsCharacterCreation() = 0;
+        void raceBenifitsCharacterCreation();
 
     public:
-        Race(Character* t_character, const std::string& t_race, bool enablePlayerInput) :
-        m_character(t_character), m_race(t_race)
-        {
+        Race(Character* t_character, const std::string& t_race, bool enablePlayerInput);
 
-            RaceData m_raceData = GameData::getInstance()->getRaceData(m_race, enablePlayerInput);
-            m_raceData.applyRaceData(m_character);
+        ~Race() = default;
 
-        }
+        void levelUp();
 
-        virtual ~Race() = default;
-
-        virtual void levelUp() = 0;
-
-        std::string getRace() const {
-            return m_race;
-        }
-
-        
+        std::string getRace() const;        
         
 };

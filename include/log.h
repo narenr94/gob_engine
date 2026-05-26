@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
+#include <string>
 
-
-#define LOG(text) do {std::cout << text << std::endl;} while(0)
+void LOG(const std::string& text);

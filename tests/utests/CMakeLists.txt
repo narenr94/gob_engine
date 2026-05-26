@@ -13,6 +13,6 @@ function(utest_run_add test_suite)
 	add_test(NAME ${test_suite} COMMAND ${test_suite})
 endfunction()
 
-add_subdirectory(character)
+add_subdirectory(gameData)
 
 
