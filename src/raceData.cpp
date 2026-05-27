@@ -153,6 +153,14 @@ void RaceData::setProficiencyData(const ProficiencyType t_type, const std::strin
             }
         }
         proficiencyData.skillProficiencies.push_back(proficiency);
+        break;
+    case ProficiencyType::SavingThrows:
+        for(const auto& sp : proficiencyData.savingThrowsProficiencies){
+            if(sp == proficiency){
+                return;
+            }
+        }
+        proficiencyData.savingThrowsProficiencies.push_back(proficiency);
     default:
         break;
     }
@@ -266,7 +274,11 @@ void RaceData::addResilience(const std::string& affliction, bool immune, bool ha
     }
 }
 
-void getRaceDataFrom(const std::string& t_racePath, RaceData& raceData, bool enablePlayerInput){
+void RaceData::updateOptionsData(const OptionsData& t_optionsData){
+    optionsData += t_optionsData;
+}
+
+void getRaceDataFrom(const std::string& t_racePath, RaceData& raceData){
     
     json j;
     if(readJsonFile(t_racePath, j)){
@@ -276,46 +288,107 @@ void getRaceDataFrom(const std::string& t_racePath, RaceData& raceData, bool ena
             if(j["base_race"].is_string()){
                 std::string baseRaceName = j["base_race"];
                 std::string baseRacePath = std::filesystem::path(t_racePath).parent_path().string() + "/" + baseRaceName + ".json";
-                getRaceDataFrom(baseRacePath, raceData, enablePlayerInput);
+                getRaceDataFrom(baseRacePath, raceData);
             }
             
             //ability mods
-            extractAndApplyAbilityMods(j, raceData);
+            if(j.contains(jsonKeyToString(JsonKeys::ability_mods))){
+                std::vector<AbilityModData> abilityModsData;
+                extractAndApplyAbilityMods(j, abilityModsData);
+                for(const auto& am : abilityModsData){
+                    raceData.addAbilityMod(am.abilityMod.first, am.abilityMod.second);
+                }
+            }
 
             //param mods
-            extractAndApplyParamMods(j, raceData);
+            if(j.contains(jsonKeyToString(JsonKeys::param_mods))){
+                std::vector<ParamModData> paramModData;
+                extractAndApplyParamMods(j, paramModData);
+                for(const auto& pm : paramModData){
+                    raceData.addParamMod(pm.paramMod.first, pm.paramMod.second);
+                }
+            }
 
             //age
-            extractAndApplyAgeData(j, raceData);
+            if(j.contains(jsonKeyToString(JsonKeys::age))){
+                AgeData ageData;
+                extractAndApplyAgeData(j, ageData);
+                raceData.setAgeData(ageData.maturityAge, ageData.avgLifespan);
+            }
 
             //alignment
-            extractAndApplyAlignmentData(j, raceData);
+            if(j.contains(jsonKeyToString(JsonKeys::alignment))){
+                Alignment alignment;
+                extractAndApplyAlignmentData(j, alignment);
+                raceData.setAlignment(alignment);
+            }
+            
 
             //size
-            extractAndApplySizeData(j, raceData);
+            if(j.contains(jsonKeyToString(JsonKeys::size)))
+            {
+                SizeData sizeData;
+                extractAndApplySizeData(j, sizeData);
+                raceData.setSizeData(sizeData.category, sizeData.dimensions.first, sizeData.dimensions.second);
+            }            
 
             //speed
-            extractAndApplySpeedData(j, raceData);
+            if(j.contains(jsonKeyToString(JsonKeys::speed_mps))){
+                float speedData;
+                extractAndApplySpeedData(j, speedData);
+                raceData.setSpeed(speedData);
+            }
 
             //languages
-            extractAndApplyLanguagesData(j, raceData);
+            if(j.contains(jsonKeyToString(JsonKeys::languages))){
+                std::vector<LanguageData> languageData;
+                extractAndApplyLanguagesData(j, languageData);
+                for(const auto& lg : languageData){
+                    raceData.addLanguageProficiency(lg.language, lg.speak, lg.read, lg.write);
+                }
+            }
 
             //darkvision
-            extractAndApplyDarkVisionData(j, raceData);
+            if(j.contains(jsonKeyToString(JsonKeys::dark_vision))){
+                    DarkvisionData darkvisionData;
+                    extractAndApplyDarkVisionData(j, darkvisionData);
+                    raceData.setDarkvisionData(darkvisionData.hasDarkvision, {darkvisionData.dim_light_eq, darkvisionData.dim_light_eq_dist}, {darkvisionData.darkvision_eq, darkvisionData.darkvision_eq_dist});
+            }
 
             //resilience
-            extractAndApplyResilienceData(j, raceData);
+            if(j.contains(jsonKeyToString(JsonKeys::resilience))){
+                std::vector<ResilienceData> resilienceData;
+                extractAndApplyResilienceData(j, resilienceData);
+                for(const auto& rs : resilienceData){
+                    raceData.addResilience(rs.affliction, rs.immune, rs.hasAdvantage, rs.hasResistance);
+                }
+            }
 
             //proficiencies
-            extractAndApplyProficiencyData(j, raceData);
+            if(j.contains(jsonKeyToString(JsonKeys::proficiency))){
+                ProficiencyData proficiencyData;
+                extractAndApplyProficiencyData(j, proficiencyData);
+                for(const auto& wp : proficiencyData.weaponProficiencies){
+                    raceData.setProficiencyData(ProficiencyType::Weapons, wp);
+                }
+            }
 
             //sleep duration
-            extractAndApplySleepDurationData(j, raceData);
+            if(j.contains(jsonKeyToString(JsonKeys::sleep_duration_hrs))){
+                float sleepDuration;
+                extractAndApplySleepDurationData(j, sleepDuration);
+                raceData.setSleepDuration(sleepDuration);
+            }
 
             //options
-            extractAndApplyOptionsData(j, raceData, enablePlayerInput);
+            if(j.contains(jsonKeyToString(JsonKeys::options))){
+                OptionsData optionsData;
+                extractAndApplyOptionsData(j, optionsData);
+                raceData.updateOptionsData(optionsData);
+            }
+            
 
-            //todo : options and traits
+            //todo : traits
 
         }
         else{

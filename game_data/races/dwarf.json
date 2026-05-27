@@ -54,13 +54,12 @@
     "proficiency" : {
         "weapons" :["battle_axe", "hand_axe", "light_hammer", "war_hammer"]
     },
-    "options" : {
-        "proficiency" : {
-                "tools" : {
-                    "choose" : 1,
-                    "all" : false,
-                    "choices" : ["smith_tools", "brewer_tools", "mason_tools"]
-            }
+    "options" : [
+        {
+            "attribute" : "proficiency",
+            "arguments" : ["tools"],
+            "choose" : 1,
+            "choices" : ["smith_tools", "brewer_tools", "mason_tools"]
         }
-    }
+    ]
 }

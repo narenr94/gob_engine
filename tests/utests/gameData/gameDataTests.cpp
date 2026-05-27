@@ -236,7 +236,7 @@ TEST_F(GameDataTest, GetRaceDataForValidRace) {
     GameData* gameData = GameData::getInstance(testDataPath);
     
     EXPECT_NO_THROW({
-        RaceData raceData = gameData->getRaceData("human", false);
+        RaceData raceData = gameData->getRaceData("human");
     });
 }
 
@@ -244,9 +244,9 @@ TEST_F(GameDataTest, GetRaceDataForMultipleRaces) {
     GameData* gameData = GameData::getInstance(testDataPath);
     
     EXPECT_NO_THROW({
-        RaceData human = gameData->getRaceData("human", false);
-        RaceData elf = gameData->getRaceData("high_elf", false);
-        RaceData dwarf = gameData->getRaceData("dwarf", false);
+        RaceData human = gameData->getRaceData("human");
+        RaceData elf = gameData->getRaceData("high_elf");
+        RaceData dwarf = gameData->getRaceData("dwarf");
     });
 }
 
@@ -255,7 +255,7 @@ TEST_F(GameDataTest, GetRaceDataWithNonExistentRace) {
     
     // Should return default empty RaceData without throwing
     EXPECT_NO_THROW({
-        RaceData raceData = gameData->getRaceData("nonexistent_race", false);
+        RaceData raceData = gameData->getRaceData("nonexistent_race");
     });
 }
 
@@ -263,7 +263,7 @@ TEST_F(GameDataTest, GetRaceDataWithPlayerInputEnabled) {
     GameData* gameData = GameData::getInstance(testDataPath);
     
     EXPECT_NO_THROW({
-        RaceData raceData = gameData->getRaceData("human", true);
+        RaceData raceData = gameData->getRaceData("human");
     });
 }
 
@@ -271,7 +271,7 @@ TEST_F(GameDataTest, GetRaceDataWithPlayerInputDisabled) {
     GameData* gameData = GameData::getInstance(testDataPath);
     
     EXPECT_NO_THROW({
-        RaceData raceData = gameData->getRaceData("human", false);
+        RaceData raceData = gameData->getRaceData("human");
     });
 }
 

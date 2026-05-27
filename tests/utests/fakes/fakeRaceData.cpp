@@ -56,8 +56,12 @@ void RaceData::addResilience(const std::string& affliction, bool immune, bool ha
     // Stub: Internal state changes not tested
 }
 
+void RaceData::updateOptionsData(const OptionsData& t_optionsData){
+    // Stub: Internal state changes not tested
+}
+
 // Fake implementation: just validates JSON structure without populating RaceData
-void getRaceDataFrom(const std::string& t_racePath, RaceData& raceData, bool enablePlayerInput){
+void getRaceDataFrom(const std::string& t_racePath, RaceData& raceData){
     json j;
     if(readJsonFile(t_racePath, j)){
         // Basic validation that's needed for GameData tests

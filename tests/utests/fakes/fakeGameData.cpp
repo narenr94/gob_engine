@@ -31,6 +31,10 @@ std::vector<std::string> GameData::getLanguagesVector() const {
     return {};
 }
 
-RaceData GameData::getRaceData(const std::string& t_raceName, bool enablePlayerInput) const {
+std::vector<std::string> GameData::getItemsVector() const {
+    return {};
+}
+
+RaceData GameData::getRaceData(const std::string& t_raceName) const {
     return RaceData();
 }

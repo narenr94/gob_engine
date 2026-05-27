@@ -20,44 +20,44 @@ void printJson(const json& j){
     // No-op in tests
 }
 
-void extractAndApplyAbilityMods(json& j, RaceData& raceData){
-    // Stub: RaceData operations are faked
+void extractAndApplyAbilityMods(json& j, std::vector<AbilityModData>& abilityModsData){
+    // Stub: for fake tests
 }
 
-void extractAndApplyParamMods(json& j, RaceData& raceData){
-    // Stub: RaceData operations are faked
+void extractAndApplyParamMods(json& j, std::vector<ParamModData>& paramModsData){
+    // Stub: for fake tests
 }
 
-void extractAndApplyAgeData(json& j, RaceData& raceData){
-    // Stub: RaceData operations are faked
+void extractAndApplyAgeData(json& j, AgeData& ageData){
+    // Stub: for fake tests
 }
 
-void extractAndApplyAlignmentData(json& j, RaceData& raceData){
-    // Stub: RaceData operations are faked
+void extractAndApplyAlignmentData(json& j, Alignment& alignment){
+    // Stub: for fake tests
 }
 
-void extractAndApplySizeData(json& j, RaceData& raceData){
-    // Stub: RaceData operations are faked
+void extractAndApplySizeData(json& j, SizeData& sizeData){
+    // Stub: for fake tests
 }
 
-void extractAndApplySpeedData(json& j, RaceData& raceData){
-    // Stub: RaceData operations are faked
+void extractAndApplySpeedData(json& j, float& speedData){
+    // Stub: for fake tests
 }
 
-void extractAndApplyLanguagesData(json& j, RaceData& raceData){
-    // Stub: RaceData operations are faked
+void extractAndApplyLanguagesData(json& j, std::vector<LanguageData>& languageData){
+    // Stub: for fake tests
 }
 
-void extractAndApplyDarkVisionData(json& j, RaceData& raceData){
-    // Stub: RaceData operations are faked
+void extractAndApplyDarkVisionData(json& j, DarkvisionData& darkvisionData){
+    // Stub: for fake tests
 }
 
-void extractAndApplyResilienceData(json& j, RaceData& raceData){
-    // Stub: RaceData operations are faked
+void extractAndApplyResilienceData(json& j, std::vector<ResilienceData>& resilienceData){
+    // Stub: for fake tests
 }
 
-void extractAndApplyProficiencyData(json& j, RaceData& raceData){
-    // Stub: RaceData operations are faked
+void extractAndApplyProficiencyData(json& j, ProficiencyData& proficiencyData){
+    // Stub: for fake tests
 }
 
 std::vector<std::string> extractAndApplyAbilities(const std::string& t_abilityPath){
@@ -129,24 +129,12 @@ std::vector<std::string> findAllRaces(const std::string& t_racePath){
     return racesVector;
 }
 
-void extractAndApplySleepDurationData(json& j, RaceData& raceData){
-    // Stub: RaceData operations are faked
+void extractAndApplySleepDurationData(json& j, float& sleepDurationData){
+    // Stub: for fake tests
 }
 
-std::vector<std::string> getProficiencyChoices(json& j, const std::string& profType, bool enablePlayerInputs){
-    return {};
-}
-
-void processProficiencyOptions(json& j, RaceData& raceData, bool enablePlayerInputs){
-    // Stub: RaceData operations are faked
-}
-
-void processLanguageOptions(json& j, RaceData& raceData, bool enablePlayerInputs){
-    // Stub: RaceData operations are faked
-}
-
-void extractAndApplyOptionsData(json& j, RaceData& raceData, bool enablePlayerInputs){
-    // Stub: RaceData operations are faked
+void extractAndApplyOptionsData(json& j, OptionsData& optionsData){
+    // Stub: for fake tests
 }
 
 std::vector<std::string> extractAllLanguages(const std::string& t_languagesPath){

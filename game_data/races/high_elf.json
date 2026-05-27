@@ -11,18 +11,19 @@
     "proficiency" : {
         "weapons" : ["long_sword", "short_sword", "long_bow", "short_bow"]
     },
-    "options" : {
-        "cantrips" : {
+    "options" : [
+        {
+            "attribute" : "cantrips",
+            "arguments" : [],
             "choose" : 1,
-            "all" : true
+            "choices" : ["all"]
         },
-        "languages" : {
-            "all" : true,
+        {
+            "attribute" : "languages",
+            "arguments" : ["speak", "read", "write"],
             "choose" : 1,
-            "speak" : true,
-            "read" : true,
-            "write" : true            
+            "choices" : ["all"]
+            
         }
-    }
-
+    ]
 }

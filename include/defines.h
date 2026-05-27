@@ -24,7 +24,8 @@ enum class ProficiencyType{
     Weapons,
     Armors,
     Tools,
-    Skills
+    Skills,
+    SavingThrows
 };
 
 enum class IlluminationType{
@@ -141,7 +142,10 @@ enum class JsonKeys{
     choices,
     sleep_duration_hrs,
     abilities,
-    params
+    params,
+    saving_throws,
+    attribute,
+    arguments
 };
 
 
@@ -227,7 +231,8 @@ const std::vector<std::pair<ProficiencyType, std::string>> proficiencyTypeStrMap
     {ProficiencyType::Weapons, "weapons"},
     {ProficiencyType::Armors, "armors"},
     {ProficiencyType::Tools, "tools"},
-    {ProficiencyType::Skills, "skills"}
+    {ProficiencyType::Skills, "skills"},
+    {ProficiencyType::SavingThrows, "saving_throws"}
 };
 
 const std::vector<std::pair<JsonKeys, std::string>> jsonKeysStrMap = {
@@ -274,7 +279,10 @@ const std::vector<std::pair<JsonKeys, std::string>> jsonKeysStrMap = {
     {JsonKeys::choices, "choices"},
     {JsonKeys::sleep_duration_hrs, "sleep_duration_hrs"},
     {JsonKeys::abilities, "abilities"},
-    {JsonKeys::params, "params"}
+    {JsonKeys::params, "params"},
+    {JsonKeys::saving_throws, "saving_throws"},
+    {JsonKeys::attribute, "attribute"},
+    {JsonKeys::arguments, "arguments"}
 };
 
 struct AgeData{
@@ -309,6 +317,7 @@ struct ProficiencyData{
     std::vector<std::string> armorProficiencies;
     std::vector<std::string> toolProficiencies;
     std::vector<std::string> skillProficiencies;
+    std::vector<std::string> savingThrowsProficiencies;
 
     void printData();
     void applyData(Character* t_character);
@@ -350,6 +359,35 @@ struct ParamModData{
     void printData();
     void applyData(Character* t_character);
     
+};
+
+struct AddItemData{
+    std::pair<std::string, unsigned short int> itemData; //item name, count
+
+    void printData();
+    void applyData(Character* t_character);
+};
+
+struct ProficiencyOptionData{
+    ProficiencyType type;
+    std::vector<std::string> choices;
+    unsigned short int chooseCount;
+};
+
+
+struct LanguageOptionData{
+    std::vector<std::string> choices;
+    unsigned short int chooseCount;
+    bool speak = false;
+    bool read = false;
+    bool write = false;
+};
+
+struct OptionsData{
+    std::vector<ProficiencyOptionData> proficiencyOptions;
+    std::vector<LanguageOptionData> languageOptions;
+
+    OptionsData& operator+=(const OptionsData& other);
 };
 
 

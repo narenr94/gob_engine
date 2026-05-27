@@ -31,6 +31,10 @@ class GameData{
 
         std::vector<std::string> m_languagesVector;
 
+        //------Vector of all items
+
+        std::vector<std::string> m_itemsVector;
+
         GameData(const std::string& t_gameDataPath);
 
     public:
@@ -47,6 +51,8 @@ class GameData{
 
         std::vector<std::string> getLanguagesVector() const;
 
-        RaceData getRaceData(const std::string& t_raceName, bool enablePlayerInput) const;
+        std::vector<std::string> getItemsVector() const;
+
+        RaceData getRaceData(const std::string& t_raceName) const;
 
 };

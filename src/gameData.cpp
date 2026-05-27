@@ -39,15 +39,19 @@ std::vector<std::string> GameData::getLanguagesVector() const {
     return m_languagesVector;
 }
 
-RaceData GameData::getRaceData(const std::string& t_raceName, bool enablePlayerInput) const {
+RaceData GameData::getRaceData(const std::string& t_raceName) const {
     for(auto& race : m_racesVector){
         if(race == t_raceName){
             RaceData data;
-            getRaceDataFrom(m_gameDataPath + "/races/" + race + ".json", data, enablePlayerInput);
+            getRaceDataFrom(m_gameDataPath + "/races/" + race + ".json", data);
             return data;
         }
     }
 
     // Return an empty RaceData if the race is not found
     return RaceData();
+}
+
+std::vector<std::string> GameData::getItemsVector() const {
+    return m_itemsVector;
 }

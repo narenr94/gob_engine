@@ -242,6 +242,15 @@ void Character::setProficiencyData(const ProficiencyData& t_proficiencyData){
         }
     }
 
+    existingItems.clear();
+
+    existingItems.insert(m_proficiencyData.savingThrowsProficiencies.begin(), m_proficiencyData.savingThrowsProficiencies.end());
+    for (const auto& item : t_proficiencyData.savingThrowsProficiencies) {
+        if (existingItems.insert(item).second) { 
+            m_proficiencyData.savingThrowsProficiencies.push_back(item);
+        }
+    }
+
 }
 
 void Character::addResilienceData(const ResilienceData& t_resilienceData){
@@ -378,4 +387,27 @@ void Character::updateAlignment(Alignment t_alignment){
 
 void Character::updateSpeed(float t_speed){
     m_speed = t_speed;
+}
+
+void Character::addItemToPack(const std::string& item, unsigned short int count){
+    if(m_pack){
+        m_pack->addItem(item, count);
+    }
+    else{
+        LOG("Character does not have a pack to add items to.");
+    }
+}
+
+std::vector<std::pair<std::string, unsigned short int>> Character::getPackItems() const {
+    if(m_pack){
+        return m_pack->getItems();
+    }
+    else{
+        LOG("Character does not have a pack to get items from.");
+        return {};
+    }
+}
+
+void Character::updatePack(std::unique_ptr<Pack> t_pack){
+    m_pack = std::move(t_pack);
 }

@@ -23,8 +23,12 @@ struct RaceData{
     std::vector<ResilienceData> resilienceDataVector;
     DarkvisionData darkvisionData;
     float sleepDurationHrs = 8.0f;
+    OptionsData optionsData;
 
     public:
+
+    RaceData() = default;
+    ~RaceData() = default;
 
     //-----replace data
 
@@ -57,6 +61,8 @@ struct RaceData{
 
     void applyRaceData(Character* t_character);
 
+    void updateOptionsData(const OptionsData& t_optionsData);
+
 
 };
 
@@ -65,4 +71,4 @@ struct RaceData{
 
 
 
-void getRaceDataFrom(const std::string& t_racePath, RaceData& raceData, bool enablePlayerInput);
+void getRaceDataFrom(const std::string& t_racePath, RaceData& raceData);

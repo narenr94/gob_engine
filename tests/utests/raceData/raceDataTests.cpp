@@ -422,6 +422,21 @@ TEST_F(RaceDataTest, SetProficiencyData_SkillProficiency) {
     });
 }
 
+TEST_F(RaceDataTest, SetProficiencyData_SavingThrowProficiency) {
+    std::string proficiency = "wisdom";
+    
+    EXPECT_NO_THROW({
+        raceData.setProficiencyData(ProficiencyType::SavingThrows, proficiency);
+    });
+}
+
+TEST_F(RaceDataTest, SetProficiencyData_MultipleSavingThrows) {
+    EXPECT_NO_THROW({
+        raceData.setProficiencyData(ProficiencyType::SavingThrows, "strength");
+        raceData.setProficiencyData(ProficiencyType::SavingThrows, "constitution");
+    });
+}
+
 TEST_F(RaceDataTest, SetProficiencyData_MultipleWeapons) {
     EXPECT_NO_THROW({
         raceData.setProficiencyData(ProficiencyType::Weapons, "longsword");
@@ -446,6 +461,90 @@ TEST_F(RaceDataTest, SetProficiencyData_DuplicateProficiency_ShouldNotAddTwice) 
     EXPECT_NO_THROW({
         raceData.setProficiencyData(ProficiencyType::Weapons, "longsword");
         // Should only be added once
+    });
+}
+
+//=============================================================================
+// updateOptionsData Tests
+//=============================================================================
+
+TEST_F(RaceDataTest, UpdateOptionsData_EmptyOptions) {
+    OptionsData options;
+    
+    EXPECT_NO_THROW({
+        raceData.updateOptionsData(options);
+    });
+}
+
+TEST_F(RaceDataTest, UpdateOptionsData_WithProficiencyOptions) {
+    OptionsData options;
+    ProficiencyOptionData profOption;
+    profOption.type = ProficiencyType::Skills;
+    profOption.choices = {"athletics", "acrobatics", "stealth"};
+    profOption.chooseCount = 2;
+    options.proficiencyOptions.push_back(profOption);
+    
+    EXPECT_NO_THROW({
+        raceData.updateOptionsData(options);
+    });
+}
+
+TEST_F(RaceDataTest, UpdateOptionsData_WithLanguageOptions) {
+    OptionsData options;
+    LanguageOptionData langOption;
+    langOption.choices = {"elvish", "dwarvish", "draconic"};
+    langOption.chooseCount = 1;
+    langOption.speak = true;
+    langOption.read = true;
+    langOption.write = true;
+    options.languageOptions.push_back(langOption);
+    
+    EXPECT_NO_THROW({
+        raceData.updateOptionsData(options);
+    });
+}
+
+TEST_F(RaceDataTest, UpdateOptionsData_WithMultipleOptions) {
+    OptionsData options;
+    
+    ProficiencyOptionData profOption;
+    profOption.type = ProficiencyType::Weapons;
+    profOption.choices = {"longsword", "shortsword"};
+    profOption.chooseCount = 1;
+    options.proficiencyOptions.push_back(profOption);
+    
+    LanguageOptionData langOption;
+    langOption.choices = {"common", "elvish"};
+    langOption.chooseCount = 1;
+    langOption.speak = true;
+    langOption.read = false;
+    langOption.write = false;
+    options.languageOptions.push_back(langOption);
+    
+    EXPECT_NO_THROW({
+        raceData.updateOptionsData(options);
+    });
+}
+
+TEST_F(RaceDataTest, UpdateOptionsData_MultipleCalls_ShouldAccumulate) {
+    OptionsData options1;
+    ProficiencyOptionData profOption1;
+    profOption1.type = ProficiencyType::Skills;
+    profOption1.choices = {"perception"};
+    profOption1.chooseCount = 1;
+    options1.proficiencyOptions.push_back(profOption1);
+    
+    OptionsData options2;
+    ProficiencyOptionData profOption2;
+    profOption2.type = ProficiencyType::Tools;
+    profOption2.choices = {"smiths_tools"};
+    profOption2.chooseCount = 1;
+    options2.proficiencyOptions.push_back(profOption2);
+    
+    EXPECT_NO_THROW({
+        raceData.updateOptionsData(options1);
+        raceData.updateOptionsData(options2);
+        // Should now have both options accumulated
     });
 }
 

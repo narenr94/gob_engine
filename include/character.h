@@ -2,6 +2,7 @@
 
 #include "defines.h"
 #include "race.h"
+#include "pack.h"
 #include "characterClass.h"
 
 #include <string>
@@ -25,6 +26,8 @@ class Character{
         std::unique_ptr<Race> m_race;
         
         std::vector<std::unique_ptr<CharacterClass>> m_class;
+
+        std::unique_ptr<Pack> m_pack;
 
         Alignment m_alignment;
 
@@ -99,6 +102,8 @@ class Character{
 
         Alignment getAlignment() const;
 
+        std::vector<std::pair<std::string, unsigned short int>> getPackItems() const;
+
 
         //----------------Sets
 
@@ -131,5 +136,10 @@ class Character{
         void updateAlignment(Alignment t_alignment);
 
         void updateSpeed(float t_speed);
+
+        void addItemToPack(const std::string& item, unsigned short int count);
+
+        void updatePack(std::unique_ptr<Pack> t_pack);
+
 
 };

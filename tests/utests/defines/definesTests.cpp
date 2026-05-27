@@ -266,8 +266,16 @@ TEST_F(DefinesTest, ProficiencyTypeStringConversion_Skills) {
     EXPECT_EQ(prof, ProficiencyType::Skills);
 }
 
+TEST_F(DefinesTest, ProficiencyTypeStringConversion_SavingThrows) {
+    std::string result = proficiencyTypeToString(ProficiencyType::SavingThrows);
+    EXPECT_EQ(result, "saving_throws");
+    
+    ProficiencyType prof = stringToProficiencyType("saving_throws");
+    EXPECT_EQ(prof, ProficiencyType::SavingThrows);
+}
+
 TEST_F(DefinesTest, ProficiencyTypeStrMap_ContainsAllTypes) {
-    EXPECT_EQ(proficiencyTypeStrMap.size(), 4);
+    EXPECT_EQ(proficiencyTypeStrMap.size(), 5);
 }
 
 //=============================================================================
@@ -400,11 +408,13 @@ TEST_F(DefinesTest, ProficiencyData_CanBeInitialized) {
     profData.armorProficiencies = {"light_armor", "medium_armor"};
     profData.toolProficiencies = {"thieves_tools"};
     profData.skillProficiencies = {"stealth", "perception"};
+    profData.savingThrowsProficiencies = {"wisdom", "dexterity"};
     
     EXPECT_EQ(profData.weaponProficiencies.size(), 2);
     EXPECT_EQ(profData.armorProficiencies.size(), 2);
     EXPECT_EQ(profData.toolProficiencies.size(), 1);
     EXPECT_EQ(profData.skillProficiencies.size(), 2);
+    EXPECT_EQ(profData.savingThrowsProficiencies.size(), 2);
 }
 
 TEST_F(DefinesTest, ProficiencyData_PrintDataDoesNotCrash) {

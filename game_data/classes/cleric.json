@@ -1,0 +1,59 @@
+{
+    "name" : "cleric",
+    "description" : "A priestly champion who wields divine magic in service of a higher power.",
+    "param_die" : [
+        {
+            "param" : "hit_points",
+            "value" : 8
+        }
+    ],
+    "proficiency" : {
+        "weapons" : ["simple_weapons"],
+        "armors" : ["light_armor", "medium_armor", "shields"],
+        "saving_throws" : ["wisdom", "charisma"]
+    },
+    "options" : {
+        "proficiency" : {
+            "skills" : {
+                "choose" : 2,
+                "all" : false,
+                "choices" : ["history", "insight", "medicine", "persuasion", "religion"]
+            }
+        },
+        "pack" : {
+            "choose" : 1,
+            "all" : false,
+            "choices" : ["priest_pack", "explorer_pack"]
+        },
+        "add_item" : [
+            {
+                "choose" : 1,
+                "all" : false,
+                "choices" : ["mace", "war_hammer"]
+            },
+            {
+                "choose" : 1,
+                "all" : false,
+                "choices" : ["scale_mail", "leather_armor", "chain_mail"]
+            },
+            {
+                "choose" : 1,
+                "all" : false,
+                "choices" : ["light_crossbow", "simple_weapon"]
+            }
+
+        ]
+    },
+    "conditional" : [
+        {
+            "condition" : "if_item_owned",
+            "arg" : ["light_crossbow"],
+            "do" : {
+                "add_item" : {
+                    "item" : "bolt",
+                    "count" : 20
+                }
+            }
+        }
+    ]
+}

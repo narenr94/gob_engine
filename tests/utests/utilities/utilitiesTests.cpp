@@ -256,6 +256,10 @@ TEST_F(UtilitiesTest, ProficiencyTypeToString_Skills) {
     EXPECT_EQ(proficiencyTypeToString(ProficiencyType::Skills), "skills");
 }
 
+TEST_F(UtilitiesTest, ProficiencyTypeToString_SavingThrows) {
+    EXPECT_EQ(proficiencyTypeToString(ProficiencyType::SavingThrows), "saving_throws");
+}
+
 TEST_F(UtilitiesTest, StringToProficiencyType_Weapons) {
     EXPECT_EQ(stringToProficiencyType("weapons"), ProficiencyType::Weapons);
 }
@@ -272,6 +276,10 @@ TEST_F(UtilitiesTest, StringToProficiencyType_Skills) {
     EXPECT_EQ(stringToProficiencyType("skills"), ProficiencyType::Skills);
 }
 
+TEST_F(UtilitiesTest, StringToProficiencyType_SavingThrows) {
+    EXPECT_EQ(stringToProficiencyType("saving_throws"), ProficiencyType::SavingThrows);
+}
+
 TEST_F(UtilitiesTest, StringToProficiencyType_InvalidString_ThrowsException) {
     EXPECT_THROW(stringToProficiencyType("magic"), std::runtime_error);
 }
@@ -281,6 +289,7 @@ TEST_F(UtilitiesTest, StringToProficiencyType_RoundTrip) {
     EXPECT_EQ(stringToProficiencyType(proficiencyTypeToString(ProficiencyType::Armors)), ProficiencyType::Armors);
     EXPECT_EQ(stringToProficiencyType(proficiencyTypeToString(ProficiencyType::Tools)), ProficiencyType::Tools);
     EXPECT_EQ(stringToProficiencyType(proficiencyTypeToString(ProficiencyType::Skills)), ProficiencyType::Skills);
+    EXPECT_EQ(stringToProficiencyType(proficiencyTypeToString(ProficiencyType::SavingThrows)), ProficiencyType::SavingThrows);
 }
 
 //=============================================================================

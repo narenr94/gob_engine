@@ -64,3 +64,7 @@ void ResilienceData::printData(){
 
 void DarkvisionData::printData(){
 }
+
+OptionsData& OptionsData::operator+=(const OptionsData& other){
+    return *this;
+}

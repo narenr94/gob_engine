@@ -83,6 +83,10 @@ void ProficiencyData::printData(){
     for(const auto& op : skillProficiencies){
         LOG(op);
     }
+    LOG("Saving Throws Proficiencies:");
+    for(const auto& sp : savingThrowsProficiencies){
+        LOG(sp);
+    }
 }
 
 void ResilienceData::printData(){
@@ -99,3 +103,17 @@ void DarkvisionData::printData(){
     LOG("dim_light_eq:" + illuminationTypeToString(dim_light_eq) + " dim_light_eq_dist:" + std::to_string(dim_light_eq_dist));
     LOG("darkvision_eq:" + illuminationTypeToString(darkvision_eq) + " darkvision_eq_dist:" + std::to_string(darkvision_eq_dist));
 }
+
+OptionsData& OptionsData::operator+=(const OptionsData& other){
+
+    for(const auto& profOption : other.proficiencyOptions){
+        proficiencyOptions.push_back(profOption);
+    }
+
+    for(const auto& langOption : other.languageOptions){
+        languageOptions.push_back(langOption);
+    }
+
+    return *this;
+}
+    
