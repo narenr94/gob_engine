@@ -11,7 +11,6 @@ set(ACT_SRCS ${SRC_ROOT}/src/commonJsonParser.cpp
              ${SRC_ROOT}/src/utilities.cpp)
 
 set(FAKE_SRCS ${FAKE_ROOT}/fakeDefines.cpp
-               ${FAKE_ROOT}/fakeRaceData.cpp
                ${FAKE_ROOT}/fakeGameData.cpp
                ${FAKE_ROOT}/fakePlayerInput.cpp
                ${FAKE_ROOT}/fakeRandomize.cpp)

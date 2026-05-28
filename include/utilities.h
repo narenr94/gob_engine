@@ -27,3 +27,7 @@ ProficiencyType stringToProficiencyType(const std::string& str);
 std::string jsonKeyToString(JsonKeys jk);
 
 JsonKeys stringToJsonKeys(const std::string& str);
+
+std::string conditionsToString(conditionsType ct);
+
+conditionsType stringToConditionstype(std::string& str);

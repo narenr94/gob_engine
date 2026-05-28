@@ -12,48 +12,49 @@
         "armors" : ["light_armor", "medium_armor", "shields"],
         "saving_throws" : ["wisdom", "charisma"]
     },
-    "options" : {
-        "proficiency" : {
-            "skills" : {
-                "choose" : 2,
-                "all" : false,
-                "choices" : ["history", "insight", "medicine", "persuasion", "religion"]
-            }
+    "options" : [
+        {
+            "attribute" : "proficiency",
+            "arguments" : ["skills"],
+            "choose" : 2,
+            "choices" : ["history", "insight", "medicine", "persuasion", "religion"]
         },
-        "pack" : {
+        {
+            "attribute" : "pack",
+            "arguments" : [],
             "choose" : 1,
-            "all" : false,
             "choices" : ["priest_pack", "explorer_pack"]
         },
-        "add_item" : [
-            {
-                "choose" : 1,
-                "all" : false,
-                "choices" : ["mace", "war_hammer"]
-            },
-            {
-                "choose" : 1,
-                "all" : false,
-                "choices" : ["scale_mail", "leather_armor", "chain_mail"]
-            },
-            {
-                "choose" : 1,
-                "all" : false,
-                "choices" : ["light_crossbow", "simple_weapon"]
-            }
-
-        ]
-    },
+        {
+            "attribute" : "item",
+            "arguments" : ["1", "1"],
+            "choose" : 1,
+            "choices" : ["mace", "war_hammer"]
+        },
+        {
+            "attribute" : "item",
+            "arguments" : ["1" , "1", "1"],
+            "choose" : 1,
+            "choices" : ["scale_mail", "leather_armor", "chain_mail"]
+        },
+        {
+            "attribute" : "item",
+            "arguments" : ["1", "1"],
+            "choose" : 1,
+            "choices" : ["light_crossbow", "simple_weapon"]
+        }
+    ],
     "conditional" : [
         {
-            "condition" : "if_item_owned",
-            "arg" : ["light_crossbow"],
-            "do" : {
-                "add_item" : {
-                    "item" : "bolt",
-                    "count" : 20
+            "condition" : "if_character_has_item",
+            "arguments" : ["light_crossbow", "1"],
+            "todo" : [
+                {
+                    "attribute" : "item",
+                    "arguments" : ["bolt", "20"]                    
                 }
-            }
+            ]
+            
         }
     ]
 }

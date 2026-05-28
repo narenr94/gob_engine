@@ -1,23 +1,26 @@
 #include "race.h"
+#include "character.h"
+#include "gameData.h"
+
+#include <filesystem>
 
 
-Race::Race(Character* t_character, const std::string& t_race, bool enablePlayerInput) :
-m_character(t_character), m_race(t_race)
+Race::Race(const std::string& t_raceName, Character* t_character)
+: m_character(t_character), m_raceName(t_raceName)
 {
+    ConsolidatedData* conData = new ConsolidatedData();
+    ConsolidatedOptionsData* conOptionData = new ConsolidatedOptionsData();
 
-    // RaceData m_raceData = GameData::getInstance()->getRaceData(m_race, enablePlayerInput);
-    // m_raceData.applyRaceData(m_character);
+    GameData* gameData = GameData::getInstance();
 
+    gameData->getRaceData(gameData->getRaceFilePath(m_raceName), *conData, *conOptionData);
 }
 
-void Race::raceBenifitsCharacterCreation(){
-
+Race::~Race(){
+    m_character = nullptr;
 }
 
-void Race::levelUp(){
 
-}
-
-std::string Race::getRace() const {
-    return m_race;
+std::string Race::getRaceName() const{
+    return m_raceName;
 }

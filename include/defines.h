@@ -145,7 +145,18 @@ enum class JsonKeys{
     params,
     saving_throws,
     attribute,
-    arguments
+    arguments,
+    conditional,
+    condition,
+    todo,
+    pack,
+    item,
+    count
+
+};
+
+enum class conditionsType{
+    if_character_has_item
 };
 
 
@@ -235,6 +246,10 @@ const std::vector<std::pair<ProficiencyType, std::string>> proficiencyTypeStrMap
     {ProficiencyType::SavingThrows, "saving_throws"}
 };
 
+const std::vector<std::pair<conditionsType, std::string>> conditionsTypeStrMap = {
+    {conditionsType::if_character_has_item, "if_character_has_item"}
+};
+
 const std::vector<std::pair<JsonKeys, std::string>> jsonKeysStrMap = {
     {JsonKeys::name, "name"},
     {JsonKeys::is_abstract, "is_abstract"},
@@ -282,112 +297,199 @@ const std::vector<std::pair<JsonKeys, std::string>> jsonKeysStrMap = {
     {JsonKeys::params, "params"},
     {JsonKeys::saving_throws, "saving_throws"},
     {JsonKeys::attribute, "attribute"},
-    {JsonKeys::arguments, "arguments"}
+    {JsonKeys::arguments, "arguments"},
+    {JsonKeys::conditional, "conditional"},
+    {JsonKeys::condition, "condition"},
+    {JsonKeys::todo, "todo"},
+    {JsonKeys::pack, "pack"},
+    {JsonKeys::item, "item"},
+    {JsonKeys::count, "count"}
 };
 
-struct AgeData{
-    unsigned short int maturityAge;
-    unsigned short int avgLifespan;
+struct Data{
+    virtual void printData() const = 0;
+    virtual void applyData(Character* t_character) const = 0;
 
-    void printData();
-    void applyData(Character* t_character);
+    virtual ~Data() = default;
+};
+
+struct AgeData : public Data{
+    unsigned short int maturityAge = 18;
+    unsigned short int avgLifespan = 100;
+
+    void printData() const;
+    void applyData(Character* t_character) const;
 }; 
 
-struct SizeData{
-    SizeCategory category;
-    std::pair<float, float> dimensions; //height in meters, weight in kgs
+struct AlignmentData : public Data{
+    Alignment alignment = Alignment::neutral_neutral;
 
-    void printData();
-    void applyData(Character* t_character);
+    void printData() const;
+    void applyData(Character* t_character) const;
 };
 
-struct LanguageData{
-    std::string language;
+struct SpeedData : public Data{
+    float speed = 0.0f;
+
+    void printData() const;
+    void applyData(Character* t_character) const;
+};
+
+struct SleepDurationData : public Data{
+    float sleepDurationHrs = 0.0f;
+
+    void printData() const;
+    void applyData(Character* t_character) const;
+};
+
+struct SizeData : public Data{
+    SizeCategory category = SizeCategory::Medium;
+    std::pair<float, float> dimensions = {1.6, 60}; //height in meters, weight in kgs
+
+    void printData() const;
+    void applyData(Character* t_character) const;
+};
+
+struct LanguageData : public Data{
+    std::string language = "";
     bool speak = false;
     bool read = false;
     bool write = false;
 
-    void printData();
-    void applyData(Character* t_character);
+    void printData() const;
+    void applyData(Character* t_character) const;
 };
 
-struct ProficiencyData{
+struct ProficiencyData : public Data{
 
-    std::vector<std::string> weaponProficiencies;
-    std::vector<std::string> armorProficiencies;
-    std::vector<std::string> toolProficiencies;
-    std::vector<std::string> skillProficiencies;
-    std::vector<std::string> savingThrowsProficiencies;
+    std::vector<std::string> weaponProficiencies = {};
+    std::vector<std::string> armorProficiencies = {};
+    std::vector<std::string> toolProficiencies = {};
+    std::vector<std::string> skillProficiencies = {};
+    std::vector<std::string> savingThrowsProficiencies = {};
 
-    void printData();
-    void applyData(Character* t_character);
+    void printData() const;
+    void applyData(Character* t_character) const;
 
 };
 
-struct ResilienceData{
-    std::string affliction;
+struct ResilienceData : public Data{
+    std::string affliction = "";
     bool immune = false;
     bool hasAdvantage = false;
     bool hasResistance = false;
 
-    void printData();
-    void applyData(Character* t_character);
+    void printData() const;
+    void applyData(Character* t_character) const;
 };
 
-struct DarkvisionData{
+struct DarkvisionData : public Data{
     bool hasDarkvision = false;
     IlluminationType dim_light_eq = IlluminationType::Dim;
     float dim_light_eq_dist = 0.0f;
     IlluminationType darkvision_eq = IlluminationType::Dark;
     float darkvision_eq_dist = 0.0f;
 
-    void printData();
-    void applyData(Character* t_character);
+    void printData() const;
+    void applyData(Character* t_character) const;
 };
 
-struct AbilityModData{
+struct AbilityModData : public Data{
     std::pair<std::string, int> abilityMod;
     
-    void printData();
-    void applyData(Character* t_character);
+    void printData() const;
+    void applyData(Character* t_character) const;
     
 };
 
-struct ParamModData{
+struct ParamModData : public Data{
     std::pair<std::string, int> paramMod;
     
-    void printData();
-    void applyData(Character* t_character);
+    void printData() const;
+    void applyData(Character* t_character) const;
     
 };
 
-struct AddItemData{
+struct ItemData : public Data{
     std::pair<std::string, unsigned short int> itemData; //item name, count
 
-    void printData();
-    void applyData(Character* t_character);
+    void printData() const;
+    void applyData(Character* t_character) const;
 };
 
-struct ProficiencyOptionData{
-    ProficiencyType type;
-    std::vector<std::string> choices;
-    unsigned short int chooseCount;
+struct PackData : public Data{
+    std::string packData = "";
+
+    void printData() const;
+    void applyData(Character* t_character) const;
+};
+
+struct ConsolidatedData : public Data{
+
+    std::vector<Data*> data = {};
+    
+    void printData() const;
+    void applyData(Character* t_character) const;
 };
 
 
-struct LanguageOptionData{
-    std::vector<std::string> choices;
-    unsigned short int chooseCount;
+struct OptionData{
+    virtual void printOption() = 0;
+    virtual void realizeOptions(Character* t_character, bool enablePlayerInput) = 0;
+
+    virtual ~OptionData() = default;
+};
+
+struct ProficiencyOptionData : public OptionData{
+    ProficiencyType type = ProficiencyType::Weapons;
+    std::vector<std::string> choices = {};
+    unsigned short int chooseCount = 0;
+
+    void printOption();
+    void realizeOptions(Character* t_character, bool enablePlayerInput);
+};
+
+
+struct LanguageOptionData : public OptionData{
+    std::vector<std::string> choices = {};
+    unsigned short int chooseCount = 0;
     bool speak = false;
     bool read = false;
     bool write = false;
+
+    void printOption();
+    void realizeOptions(Character* t_character, bool enablePlayerInput);
 };
 
-struct OptionsData{
-    std::vector<ProficiencyOptionData> proficiencyOptions;
-    std::vector<LanguageOptionData> languageOptions;
+struct ItemOptionData : public OptionData{
+    std::vector<std::pair<std::string, unsigned short int>> choices = {}; //item name, count
+    unsigned short int chooseCount = 0;
 
-    OptionsData& operator+=(const OptionsData& other);
+    void printOption();
+    void realizeOptions(Character* t_character, bool enablePlayerInput);
+};
+
+struct PackOptionData : public OptionData{
+    std::vector<std::string> choices = {};
+    unsigned short int chooseCount = 0;
+
+    void printOption();
+    void realizeOptions(Character* t_character, bool enablePlayerInput);
+};
+
+struct ConsolidatedOptionsData : public OptionData{
+
+    std::vector<OptionData*> options = {};
+
+    void printOption();
+    void realizeOptions(Character* t_character, bool enablePlayerInput);
+
+};
+
+struct ifCharacterHasItemArg{
+    std::string ind;
+    unsigned short int count;
+    Character* character;
 };
 
 

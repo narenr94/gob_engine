@@ -8,10 +8,14 @@ include_directories(${GTEST_INCLUDE_DIRS})
 include_directories(${GMOCK_INCLUDE_DIRS})
 
 set(ACT_SRCS ${SRC_ROOT}/src/defines.cpp
-             ${SRC_ROOT}/src/utilities.cpp)
+             ${SRC_ROOT}/src/utilities.cpp
+             ${SRC_ROOT}/src/pack.cpp)
 
 set(FAKE_SRCS ${FAKE_ROOT}/fakeCharacter.cpp
-               ${FAKE_ROOT}/fakeLog.cpp)
+               ${FAKE_ROOT}/fakeLog.cpp
+               ${FAKE_ROOT}/fakePlayerInput.cpp
+               ${FAKE_ROOT}/fakeRandomize.cpp
+               ${FAKE_ROOT}/fakeRace.cpp)
 
 # Defines Tests
 set(EXEC_NAME definesTests)

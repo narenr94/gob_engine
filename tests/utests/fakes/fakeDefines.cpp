@@ -1,70 +1,138 @@
 #include "defines.h"
+#include "character.h"
 
-void AgeData::applyData(Character* t_character){
+void AgeData::applyData(Character* t_character) const{
     
 }
 
-void SizeData::applyData(Character* t_character){
+void SizeData::applyData(Character* t_character) const{
     
 }
 
-void AbilityModData::applyData(Character* t_character){
+void AbilityModData::applyData(Character* t_character) const{
     
 }
 
-void ParamModData::applyData(Character* t_character){
+void ParamModData::applyData(Character* t_character) const{
     
 }
     
 
-void LanguageData::applyData(Character* t_character){
+void LanguageData::applyData(Character* t_character) const{
     
 }
 
-void ProficiencyData::applyData(Character* t_character){
+void ProficiencyData::applyData(Character* t_character) const{
     
 }
 
-void ResilienceData::applyData(Character* t_character){
+void ResilienceData::applyData(Character* t_character) const{
     
 }
 
-void DarkvisionData::applyData(Character* t_character){
+void DarkvisionData::applyData(Character* t_character) const{
     
 }
 
-void AgeData::printData(){
-
+void ItemData::applyData(Character* t_character) const{
     
 }
 
-void SizeData::printData(){
+void PackData::applyData(Character* t_character) const{
     
 }
 
-void AbilityModData::printData(){
+void AlignmentData::applyData(Character* t_character) const{
     
 }
 
-void ParamModData::printData(){
+void SpeedData::applyData(Character* t_character) const{
     
 }
 
-void LanguageData::printData(){
+void SleepDurationData::applyData(Character* t_character) const{
     
 }
 
-void ProficiencyData::printData(){
+void ConsolidatedData::applyData(Character* t_character) const{
     
 }
 
-void ResilienceData::printData(){
+void AgeData::printData() const{
     
 }
 
-void DarkvisionData::printData(){
+void SizeData::printData() const{
+    
 }
 
-OptionsData& OptionsData::operator+=(const OptionsData& other){
-    return *this;
+void AbilityModData::printData() const{
+    
+}
+
+void ParamModData::printData() const{
+    
+}
+
+void LanguageData::printData() const{
+    
+}
+
+void ProficiencyData::printData() const{
+    
+}
+
+void ResilienceData::printData() const{
+    
+}
+
+void DarkvisionData::printData() const{
+}
+
+void ItemData::printData() const{
+}
+
+void PackData::printData() const{
+}
+
+void AlignmentData::printData() const{
+}
+
+void SpeedData::printData() const{
+}
+
+void SleepDurationData::printData() const{
+}
+
+void ConsolidatedData::printData() const{
+}
+
+void ProficiencyOptionData::printOption(){
+}
+
+void LanguageOptionData::printOption(){
+}
+
+void ItemOptionData::printOption(){
+}
+
+void PackOptionData::printOption(){
+}
+
+void ConsolidatedOptionsData::printOption(){
+}
+
+void ProficiencyOptionData::realizeOptions(Character* t_character, bool enablePlayerInput){
+}
+
+void LanguageOptionData::realizeOptions(Character* t_character, bool enablePlayerInput){
+}
+
+void ItemOptionData::realizeOptions(Character* t_character, bool enablePlayerInput){
+}
+
+void PackOptionData::realizeOptions(Character* t_character, bool enablePlayerInput){
+}
+
+void ConsolidatedOptionsData::realizeOptions(Character* t_character, bool enablePlayerInput){
 }

@@ -1,5 +1,5 @@
 #include "gameData.h"
-#include "raceData.h"
+#include "commonJsonParser.h"
 
 GameData::GameData(const std::string& t_gameDataPath)
 {
@@ -35,6 +35,10 @@ std::vector<std::string> GameData::getItemsVector() const {
     return {};
 }
 
-RaceData GameData::getRaceData(const std::string& t_raceName) const {
-    return RaceData();
+void GameData::getRaceData(const std::string& t_racePath, ConsolidatedData& t_conData, ConsolidatedOptionsData& t_conOptdata) const {
+    // Stub: Race data loading not tested in unit tests
+}
+
+std::string GameData::getRaceFilePath(const std::string& t_raceName) const{
+    return "";
 }

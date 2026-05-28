@@ -9,8 +9,7 @@ include_directories(${GMOCK_INCLUDE_DIRS})
 
 set(ACT_SRCS ${SRC_ROOT}/src/gameData.cpp)
 
-set(FAKE_SRCS ${FAKE_ROOT}/fakeRaceData.cpp
-               ${FAKE_ROOT}/fakeDefines.cpp
+set(FAKE_SRCS ${FAKE_ROOT}/fakeDefines.cpp
                ${FAKE_ROOT}/fakeCommonJsonParser.cpp)
 
 # Base Character Tests

@@ -1,7 +1,5 @@
 #include "commonJsonParser.h"
-#include "raceData.h"
 #include "utilities.h"
-#include "playerInput.h"
 #include "gameData.h"
 #include "randomize.h"
 
@@ -18,7 +16,7 @@ void printJson(const json& j){
     std::cout << j.dump(4) << std::endl;
 }
 
-void extractAndApplyAbilityMods(json& j, std::vector<AbilityModData>& abilityModsData){
+void extractAndApplyAbilityMods(json& j, std::vector<AbilityModData*>& abilityModsData){
     for (const auto& mod : j[jsonKeyToString(JsonKeys::ability_mods)]) {
 
         //confirm all mandatory fields are available
@@ -29,13 +27,13 @@ void extractAndApplyAbilityMods(json& j, std::vector<AbilityModData>& abilityMod
 
         std::string ability = mod[jsonKeyToString(JsonKeys::ability)];
         int value = mod[jsonKeyToString(JsonKeys::mod)];
-        AbilityModData temp;
-        temp.abilityMod = {ability, value};
+        AbilityModData* temp = new AbilityModData();
+        temp->abilityMod = {ability, value};
         abilityModsData.push_back(temp);
     }
 }
 
-void extractAndApplyParamMods(json& j, std::vector<ParamModData>& paramModsData){
+void extractAndApplyParamMods(json& j, std::vector<ParamModData*>& paramModsData){
     for (const auto& mod : j[jsonKeyToString(JsonKeys::param_mods)]) {
 
         //confirm all mandatory fields are available
@@ -47,30 +45,30 @@ void extractAndApplyParamMods(json& j, std::vector<ParamModData>& paramModsData)
         std::string param = mod[jsonKeyToString(JsonKeys::param)];
         int value = mod[jsonKeyToString(JsonKeys::mod)];
 
-        ParamModData temp;
-        temp.paramMod = {param, value};
+        ParamModData* temp = new ParamModData();
+        temp->paramMod = {param, value};
 
         paramModsData.push_back(temp);
     }
 }
 
-void extractAndApplyAgeData(json& j, AgeData& ageData){
+void extractAndApplyAgeData(json& j, AgeData* ageData){
     //confirm all mandatory fields are available
     if(!j[jsonKeyToString(JsonKeys::age)].contains(jsonKeyToString(JsonKeys::maturity))
     || !j[jsonKeyToString(JsonKeys::age)].contains(jsonKeyToString(JsonKeys::life_span))){
         throw std::runtime_error("mandatory fields not available for " + jsonKeyToString(JsonKeys::age));
     }
 
-    ageData.maturityAge = j[jsonKeyToString(JsonKeys::age)][jsonKeyToString(JsonKeys::maturity)];
-    ageData.avgLifespan = j[jsonKeyToString(JsonKeys::age)][jsonKeyToString(JsonKeys::life_span)];
+    ageData->maturityAge = j[jsonKeyToString(JsonKeys::age)][jsonKeyToString(JsonKeys::maturity)];
+    ageData->avgLifespan = j[jsonKeyToString(JsonKeys::age)][jsonKeyToString(JsonKeys::life_span)];
 
 }
 
-void extractAndApplyAlignmentData(json& j, Alignment& alignment){
-    alignment = stringToAlignment(j[jsonKeyToString(JsonKeys::alignment)]);
+void extractAndApplyAlignmentData(json& j, AlignmentData* alignmentData){
+    alignmentData->alignment = stringToAlignment(j[jsonKeyToString(JsonKeys::alignment)]);
 }
 
-void extractAndApplySizeData(json& j, SizeData& sizeData){
+void extractAndApplySizeData(json& j, SizeData* sizeData){
     //confirm all mandatory fields are available
     if(!j[jsonKeyToString(JsonKeys::size)].contains(jsonKeyToString(JsonKeys::avg_height_m))
     || !j[jsonKeyToString(JsonKeys::size)].contains(jsonKeyToString(JsonKeys::avg_weight_kg))){
@@ -78,17 +76,17 @@ void extractAndApplySizeData(json& j, SizeData& sizeData){
     }
 
 
-    sizeData.category = stringToSizeCategory(j[jsonKeyToString(JsonKeys::size)][jsonKeyToString(JsonKeys::category)]);
-    sizeData.dimensions = {j[jsonKeyToString(JsonKeys::size)][jsonKeyToString(JsonKeys::avg_height_m)],
+    sizeData->category = stringToSizeCategory(j[jsonKeyToString(JsonKeys::size)][jsonKeyToString(JsonKeys::category)]);
+    sizeData->dimensions = {j[jsonKeyToString(JsonKeys::size)][jsonKeyToString(JsonKeys::avg_height_m)],
                         j[jsonKeyToString(JsonKeys::size)][jsonKeyToString(JsonKeys::avg_weight_kg)]};
 
 }
 
-void extractAndApplySpeedData(json& j, float& speedData){
-    speedData = j[jsonKeyToString(JsonKeys::speed_mps)];
+void extractAndApplySpeedData(json& j, SpeedData* speedData){
+    speedData->speed = j[jsonKeyToString(JsonKeys::speed_mps)];
 }
 
-void extractAndApplyLanguagesData(json& j, std::vector<LanguageData>& languageData){
+void extractAndApplyLanguagesData(json& j, std::vector<LanguageData*>& languageData){
    for (const auto& lang : j[jsonKeyToString(JsonKeys::languages)]) {
 
         //confirm all mandatory fields are available
@@ -99,17 +97,17 @@ void extractAndApplyLanguagesData(json& j, std::vector<LanguageData>& languageDa
             throw std::runtime_error("mandatory fields not available for " + jsonKeyToString(JsonKeys::languages));
         }
 
-        LanguageData temp;
+        LanguageData* temp = new LanguageData();
 
-        temp.language = lang[jsonKeyToString(JsonKeys::name)];
-        temp.speak = lang[jsonKeyToString(JsonKeys::speak)];
-        temp.read = lang[jsonKeyToString(JsonKeys::read)];
-        temp.write = lang[jsonKeyToString(JsonKeys::write)];
+        temp->language = lang[jsonKeyToString(JsonKeys::name)];
+        temp->speak = lang[jsonKeyToString(JsonKeys::speak)];
+        temp->read = lang[jsonKeyToString(JsonKeys::read)];
+        temp->write = lang[jsonKeyToString(JsonKeys::write)];
         languageData.push_back(temp);
     }
 }
 
-void extractAndApplyDarkVisionData(json& j, DarkvisionData& darkvisionData){
+void extractAndApplyDarkVisionData(json& j, DarkvisionData* darkvisionData){
     //confirm all mandatory fields are available
     if(!j[jsonKeyToString(JsonKeys::dark_vision)].contains(jsonKeyToString(JsonKeys::has_darkvision))
     || !j[jsonKeyToString(JsonKeys::dark_vision)].contains(jsonKeyToString(JsonKeys::dim_light_eq))
@@ -122,16 +120,16 @@ void extractAndApplyDarkVisionData(json& j, DarkvisionData& darkvisionData){
         throw std::runtime_error("mandatory fields not available for " + jsonKeyToString(JsonKeys::dark_vision));
     }
 
-    darkvisionData.hasDarkvision = j[jsonKeyToString(JsonKeys::dark_vision)][jsonKeyToString(JsonKeys::has_darkvision)];
+    darkvisionData->hasDarkvision = j[jsonKeyToString(JsonKeys::dark_vision)][jsonKeyToString(JsonKeys::has_darkvision)];
 
-    darkvisionData.dim_light_eq = stringToIlluminationType(j[jsonKeyToString(JsonKeys::dark_vision)][jsonKeyToString(JsonKeys::dim_light_eq)][jsonKeyToString(JsonKeys::as_ambient)]); 
-    darkvisionData.dim_light_eq_dist = j[jsonKeyToString(JsonKeys::dark_vision)][jsonKeyToString(JsonKeys::dim_light_eq)][jsonKeyToString(JsonKeys::distance_m)];
-    darkvisionData.darkvision_eq = stringToIlluminationType(j[jsonKeyToString(JsonKeys::dark_vision)][jsonKeyToString(JsonKeys::darkness_eq)][jsonKeyToString(JsonKeys::as_ambient)]);
-    darkvisionData.darkvision_eq_dist = j[jsonKeyToString(JsonKeys::dark_vision)][jsonKeyToString(JsonKeys::darkness_eq)][jsonKeyToString(JsonKeys::distance_m)];
+    darkvisionData->dim_light_eq = stringToIlluminationType(j[jsonKeyToString(JsonKeys::dark_vision)][jsonKeyToString(JsonKeys::dim_light_eq)][jsonKeyToString(JsonKeys::as_ambient)]); 
+    darkvisionData->dim_light_eq_dist = j[jsonKeyToString(JsonKeys::dark_vision)][jsonKeyToString(JsonKeys::dim_light_eq)][jsonKeyToString(JsonKeys::distance_m)];
+    darkvisionData->darkvision_eq = stringToIlluminationType(j[jsonKeyToString(JsonKeys::dark_vision)][jsonKeyToString(JsonKeys::darkness_eq)][jsonKeyToString(JsonKeys::as_ambient)]);
+    darkvisionData->darkvision_eq_dist = j[jsonKeyToString(JsonKeys::dark_vision)][jsonKeyToString(JsonKeys::darkness_eq)][jsonKeyToString(JsonKeys::distance_m)];
 
 }
 
-void extractAndApplyResilienceData(json& j, std::vector<ResilienceData>& resilienceData){
+void extractAndApplyResilienceData(json& j, std::vector<ResilienceData*>& resilienceData){
     for(const auto& res : j[jsonKeyToString(JsonKeys::resilience)]){
 
         //confirm all mandatory fields are available
@@ -139,55 +137,55 @@ void extractAndApplyResilienceData(json& j, std::vector<ResilienceData>& resilie
             throw std::runtime_error("mandatory fields not available for " + jsonKeyToString(JsonKeys::resilience));
         }
 
-        ResilienceData temp;
+        ResilienceData* temp = new ResilienceData();
 
-        temp.affliction = res[jsonKeyToString(JsonKeys::affliction)];
+        temp->affliction = res[jsonKeyToString(JsonKeys::affliction)];
         
-        temp.immune = false;
+        temp->immune = false;
         if(res.contains(jsonKeyToString(JsonKeys::immune))){
-            temp.immune = res[jsonKeyToString(JsonKeys::immune)];
+            temp->immune = res[jsonKeyToString(JsonKeys::immune)];
         }
-        temp.hasAdvantage = false;
+        temp->hasAdvantage = false;
         if(res.contains(jsonKeyToString(JsonKeys::has_advantage))){
-            temp.hasAdvantage = res[jsonKeyToString(JsonKeys::has_advantage)];
+            temp->hasAdvantage = res[jsonKeyToString(JsonKeys::has_advantage)];
         }
-        temp.hasResistance = false;
+        temp->hasResistance = false;
         if(res.contains(jsonKeyToString(JsonKeys::has_resistance))){
-            temp.hasResistance = res[jsonKeyToString(JsonKeys::has_resistance)];
+            temp->hasResistance = res[jsonKeyToString(JsonKeys::has_resistance)];
         }
 
         resilienceData.push_back(temp);
     }
 }
 
-void extractAndApplyProficiencyData(json& j, ProficiencyData& proficiencyData){
+void extractAndApplyProficiencyData(json& j, ProficiencyData* proficiencyData){
     if(j[jsonKeyToString(JsonKeys::proficiency)].contains(jsonKeyToString(JsonKeys::weapons))){
         for(const auto& wp : j[jsonKeyToString(JsonKeys::proficiency)][jsonKeyToString(JsonKeys::weapons)]){
-            proficiencyData.weaponProficiencies.push_back(wp);
+            proficiencyData->weaponProficiencies.push_back(wp);
         }
     }
 
     if(j[jsonKeyToString(JsonKeys::proficiency)].contains(jsonKeyToString(JsonKeys::armors))){
         for(const auto& ar : j[jsonKeyToString(JsonKeys::proficiency)][jsonKeyToString(JsonKeys::armors)]){
-            proficiencyData.armorProficiencies.push_back(ar);
+            proficiencyData->armorProficiencies.push_back(ar);
         }
     }
 
     if(j[jsonKeyToString(JsonKeys::proficiency)].contains(jsonKeyToString(JsonKeys::tools))){
         for(const auto& tl : j[jsonKeyToString(JsonKeys::proficiency)][jsonKeyToString(JsonKeys::tools)]){
-            proficiencyData.toolProficiencies.push_back(tl);
+            proficiencyData->toolProficiencies.push_back(tl);
         }
     }
 
     if(j[jsonKeyToString(JsonKeys::proficiency)].contains(jsonKeyToString(JsonKeys::skills))){
         for(const auto& sk : j[jsonKeyToString(JsonKeys::proficiency)][jsonKeyToString(JsonKeys::skills)]){
-            proficiencyData.skillProficiencies.push_back(sk);
+            proficiencyData->skillProficiencies.push_back(sk);
         }
     }
 
     if(j[jsonKeyToString(JsonKeys::proficiency)].contains(jsonKeyToString(JsonKeys::saving_throws))){
         for(const auto& st : j[jsonKeyToString(JsonKeys::proficiency)][jsonKeyToString(JsonKeys::saving_throws)]){
-            proficiencyData.savingThrowsProficiencies.push_back(st);
+            proficiencyData->savingThrowsProficiencies.push_back(st);
         }
     }
 }
@@ -272,11 +270,32 @@ std::vector<std::string> findAllRaces(const std::string& t_racePath){
     return racesVector;
 }
 
-void extractAndApplySleepDurationData(json& j, float& sleepDurationData){
-    sleepDurationData = j[jsonKeyToString(JsonKeys::sleep_duration_hrs)];
+void extractAndApplySleepDurationData(json& j, SleepDurationData* sleepDurationData){
+    sleepDurationData->sleepDurationHrs = j[jsonKeyToString(JsonKeys::sleep_duration_hrs)];
 }
 
-void getProficiencyOptions(json& j, ProficiencyOptionData& profData){
+void extractAndApplyPackData(json& j, PackData* packData){
+    
+    packData->packData = j[jsonKeyToString(JsonKeys::pack)];
+
+}
+
+void extractAndApplyItemData(json& j, std::vector<ItemData*>& itemData){
+
+    for(const auto& it : j[jsonKeyToString(JsonKeys::item)]){
+
+        if(!it.contains(jsonKeyToString(JsonKeys::name)) || !it.contains(jsonKeyToString(JsonKeys::count))){
+            throw std::runtime_error("mandatory fields not available for " + jsonKeyToString(JsonKeys::item));
+        }
+
+        ItemData* temp = new ItemData();
+        temp->itemData = {it[jsonKeyToString(JsonKeys::name)], it[jsonKeyToString(JsonKeys::count)]};
+
+        itemData.push_back(temp);
+    }
+}
+
+void getProficiencyOptions(json& j, ProficiencyOptionData* profData){
 
     if(j[jsonKeyToString(JsonKeys::arguments)].size() != 1 
     || (!(j[jsonKeyToString(JsonKeys::arguments)][0] == jsonKeyToString(JsonKeys::weapons) || j[jsonKeyToString(JsonKeys::arguments)][0] == jsonKeyToString(JsonKeys::armors) || j[jsonKeyToString(JsonKeys::arguments)][0] == jsonKeyToString(JsonKeys::tools) || j[jsonKeyToString(JsonKeys::arguments)][0] == jsonKeyToString(JsonKeys::skills) || j[jsonKeyToString(JsonKeys::arguments)][0] == jsonKeyToString(JsonKeys::saving_throws)))){
@@ -284,29 +303,29 @@ void getProficiencyOptions(json& j, ProficiencyOptionData& profData){
     }
 
     if(j[jsonKeyToString(JsonKeys::arguments)][0] == jsonKeyToString(JsonKeys::weapons)){
-        profData.type = ProficiencyType::Weapons;
+        profData->type = ProficiencyType::Weapons;
     }
     else if(j[jsonKeyToString(JsonKeys::arguments)][0] == jsonKeyToString(JsonKeys::armors)){
-        profData.type = ProficiencyType::Armors;
+        profData->type = ProficiencyType::Armors;
     }
     else if(j[jsonKeyToString(JsonKeys::arguments)][0] == jsonKeyToString(JsonKeys::tools)){
-        profData.type = ProficiencyType::Tools;
+        profData->type = ProficiencyType::Tools;
     }
     else if(j[jsonKeyToString(JsonKeys::arguments)][0] == jsonKeyToString(JsonKeys::skills)){
-        profData.type = ProficiencyType::Skills;
+        profData->type = ProficiencyType::Skills;
     }
     else if(j[jsonKeyToString(JsonKeys::arguments)][0] == jsonKeyToString(JsonKeys::saving_throws)){
-        profData.type = ProficiencyType::SavingThrows;
+        profData->type = ProficiencyType::SavingThrows;
     }
 
-    profData.choices = j[jsonKeyToString(JsonKeys::choices)].get<std::vector<std::string>>();
+    profData->choices = j[jsonKeyToString(JsonKeys::choices)].get<std::vector<std::string>>();
 
-    profData.chooseCount = j[jsonKeyToString(JsonKeys::choose)].get<unsigned short int>();
+    profData->chooseCount = j[jsonKeyToString(JsonKeys::choose)].get<unsigned short int>();
 
 
 }
 
-void getLanguageOptions(json& j, LanguageOptionData& langData){
+void getLanguageOptions(json& j, LanguageOptionData* langData){
 
     if((!j[jsonKeyToString(JsonKeys::arguments)].size() <= 3) || (!j[jsonKeyToString(JsonKeys::arguments)].size() >=1)){
         throw std::runtime_error("invalid number of arguments for language options");
@@ -318,22 +337,56 @@ void getLanguageOptions(json& j, LanguageOptionData& langData){
         }
 
         if(arg == jsonKeyToString(JsonKeys::speak)){
-            langData.speak = true;
+            langData->speak = true;
         }
         else if(arg == jsonKeyToString(JsonKeys::read)){
-            langData.read = true;
+            langData->read = true;
         }
         else if(arg == jsonKeyToString(JsonKeys::write)){
-            langData.write = true;
+            langData->write = true;
         }
     }
 
-    langData.choices = j[jsonKeyToString(JsonKeys::choices)].get<std::vector<std::string>>();
-    langData.chooseCount = j[jsonKeyToString(JsonKeys::choose)].get<unsigned short int>();
+    langData->choices = j[jsonKeyToString(JsonKeys::choices)].get<std::vector<std::string>>();
+    langData->chooseCount = j[jsonKeyToString(JsonKeys::choose)].get<unsigned short int>();
     
 }
 
-void extractAndApplyOptionsData(json& j, OptionsData& optionsData){
+void getItemOptions(json& j, ItemOptionData* itemData){
+
+    if( (j.contains(jsonKeyToString(JsonKeys::arguments)))
+        && (j.contains(jsonKeyToString(JsonKeys::choices))
+        && (j.contains(jsonKeyToString(JsonKeys::choose)))
+        && (j[jsonKeyToString(JsonKeys::choices)].size() == j[jsonKeyToString(JsonKeys::arguments)].size())))
+    {
+        throw std::runtime_error("invalid number of arguments for item options, currently expecting 0");
+    }
+
+    std::vector<std::string> choices = j[jsonKeyToString(JsonKeys::choices)].get<std::vector<std::string>>();
+    std::vector<std::string>  counts = j[jsonKeyToString(JsonKeys::arguments)].get<std::vector<std::string>>();
+
+    for(size_t i = 0; i < choices.size(); i++){
+        unsigned short int count = std::stoi(counts[i]);
+        itemData->choices.push_back({choices[i], count});
+    }
+
+    itemData->chooseCount = j[jsonKeyToString(JsonKeys::choose)].get<unsigned short int>();
+}
+
+void getPackOptions(json& j, PackOptionData* packData){
+
+    if( (j.contains(jsonKeyToString(JsonKeys::choices))
+        && (j.contains(jsonKeyToString(JsonKeys::choose)))))
+    {
+    throw std::runtime_error("invalid number of arguments for pack options, currently expecting 0");
+    }
+
+    packData->choices = j[jsonKeyToString(JsonKeys::choices)].get<std::vector<std::string>>();
+    packData->chooseCount = j[jsonKeyToString(JsonKeys::choose)].get<unsigned short int>();
+}
+        
+
+void extractAndApplyOptionsData(json& j, ConsolidatedOptionsData& optionsData){
 
 
     for(auto& option : j[jsonKeyToString(JsonKeys::options)]){
@@ -348,14 +401,25 @@ void extractAndApplyOptionsData(json& j, OptionsData& optionsData){
         std::string attribute = option[jsonKeyToString(JsonKeys::attribute)];
 
         if(attribute == jsonKeyToString(JsonKeys::proficiency)){
-            ProficiencyOptionData profData;
+            ProficiencyOptionData* profData = new ProficiencyOptionData();
             getProficiencyOptions(option, profData);
-            optionsData.proficiencyOptions.push_back(profData);
+            optionsData.options.push_back(profData);
         }
         else if (attribute == jsonKeyToString(JsonKeys::languages)){
-            LanguageOptionData langData;
+            LanguageOptionData* langData = new LanguageOptionData();
             getLanguageOptions(option, langData);
-            optionsData.languageOptions.push_back(langData);
+            optionsData.options.push_back(langData);
+        }
+        else if(attribute == jsonKeyToString(JsonKeys::pack)){
+            //todo - improve when pack data structure is defined, currently assuming it's just a list of pack names
+            PackOptionData* packData = new PackOptionData();
+            getPackOptions(option, packData);
+            optionsData.options.push_back(packData);
+        }
+        else if(attribute == jsonKeyToString(JsonKeys::item)){
+            ItemOptionData* itemData = new ItemOptionData();
+            getItemOptions(option, itemData);
+            optionsData.options.push_back(itemData);
         }
         else{
             throw std::runtime_error("unsupported attribute type in options: " + attribute);
@@ -382,4 +446,131 @@ std::vector<std::string> extractAllLanguages(const std::string& t_languagesPath)
     }
 
     return languagesVector;
+}
+
+void updateConsolidatedData(json& j, ConsolidatedData& conData){
+    if(j.contains(jsonKeyToString(JsonKeys::ability_mods))){
+
+        std::vector<AbilityModData*> abilityModsData;
+        extractAndApplyAbilityMods(j, abilityModsData);
+        for(auto& mod : abilityModsData){
+            conData.data.push_back(mod);
+        }
+    }
+
+    if(j.contains(jsonKeyToString(JsonKeys::param_mods))){
+        std::vector<ParamModData*> paramModsData;
+        extractAndApplyParamMods(j, paramModsData);
+        for(auto& mod : paramModsData){
+            conData.data.push_back(mod);
+        }
+    }
+
+    if(j.contains(jsonKeyToString(JsonKeys::age))){
+        AgeData* ageData = new AgeData();
+        extractAndApplyAgeData(j, ageData);
+        conData.data.push_back(ageData);
+    }
+
+    if(j.contains(jsonKeyToString(JsonKeys::alignment))){
+        AlignmentData* alignmentData = new AlignmentData();
+        extractAndApplyAlignmentData(j, alignmentData);
+        conData.data.push_back(alignmentData);
+    }
+
+    if(j.contains(jsonKeyToString(JsonKeys::size))){
+        SizeData* sizeData = new SizeData();
+        extractAndApplySizeData(j, sizeData);
+        conData.data.push_back(sizeData);
+    }
+
+    if(j.contains(jsonKeyToString(JsonKeys::speed_mps))){
+        SpeedData* speedData = new SpeedData();
+        extractAndApplySpeedData(j, speedData);
+        conData.data.push_back(speedData);
+    }
+
+    if(j.contains(jsonKeyToString(JsonKeys::languages))){
+        std::vector<LanguageData*> languageData;
+        extractAndApplyLanguagesData(j, languageData);
+        for(auto& ln : languageData){
+            conData.data.push_back(ln);
+        }
+    }
+
+    if(j.contains(jsonKeyToString(JsonKeys::dark_vision))){
+        DarkvisionData* darkvisionData = new DarkvisionData();
+        extractAndApplyDarkVisionData(j, darkvisionData);
+        conData.data.push_back(darkvisionData);
+    }
+
+    if(j.contains(jsonKeyToString(JsonKeys::resilience))){
+        std::vector<ResilienceData*> resilienceData;
+        extractAndApplyResilienceData(j, resilienceData);
+        for(auto& rd : resilienceData){
+            conData.data.push_back(rd);
+        }
+    }
+
+    if(j.contains(jsonKeyToString(JsonKeys::proficiency))){
+        ProficiencyData* proficiencyData = new ProficiencyData();
+        extractAndApplyProficiencyData(j, proficiencyData);
+        conData.data.push_back(proficiencyData);
+    }
+
+    if(j.contains(jsonKeyToString(JsonKeys::sleep_duration_hrs))){
+        SleepDurationData* sleepDuration = new SleepDurationData();
+        extractAndApplySleepDurationData(j, sleepDuration);
+        conData.data.push_back(sleepDuration);
+    }
+
+    if(j.contains(jsonKeyToString(JsonKeys::pack))){
+        PackData* packData = new PackData();
+        extractAndApplyPackData(j, packData);
+        conData.data.push_back(packData);
+    }
+
+    if(j.contains(jsonKeyToString(JsonKeys::item))){
+        std::vector<ItemData*> itemData;
+        extractAndApplyItemData(j, itemData);
+        for(auto& item : itemData){
+            conData.data.push_back(item);
+        }
+    }
+}
+
+void updateConsolidatedOptionsData(json& j, ConsolidatedOptionsData& optionsData){
+
+    if(j.contains(jsonKeyToString(JsonKeys::options))){
+        for(auto& op : j[jsonKeyToString(JsonKeys::options)]){
+            if(!op.contains(jsonKeyToString(JsonKeys::attribute))){
+                throw std::runtime_error("mandatory field 'attribute' not available in options JSON data: " + op.dump());
+            }
+
+            if(op[jsonKeyToString(JsonKeys::attribute)] == jsonKeyToString(JsonKeys::proficiency)){
+                ProficiencyOptionData* profData;
+                getProficiencyOptions(op, profData);
+                optionsData.options.push_back(profData);
+            }
+            else if (op[jsonKeyToString(JsonKeys::attribute)] == jsonKeyToString(JsonKeys::languages)){
+                LanguageOptionData* langData;
+                getLanguageOptions(op, langData);
+                optionsData.options.push_back(langData);
+            }
+            else if(op[jsonKeyToString(JsonKeys::attribute)] == jsonKeyToString(JsonKeys::pack)){
+                //todo - improve when pack data structure is defined, currently assuming it's just a list of pack names
+                PackOptionData* packData;
+                getPackOptions(op, packData);
+                optionsData.options.push_back(packData);
+            }
+            else if(op[jsonKeyToString(JsonKeys::attribute)] == jsonKeyToString(JsonKeys::item)){
+                ItemOptionData* itemData;
+                getItemOptions(op, itemData);
+                optionsData.options.push_back(itemData);
+            }
+            else{
+                throw std::runtime_error("unsupported attribute type in options: " + op[jsonKeyToString(JsonKeys::attribute)].get<std::string>());
+            }
+        }
+    }
 }

@@ -7,11 +7,15 @@ include_directories(${SRC_ROOT}/include)
 include_directories(${GTEST_INCLUDE_DIRS})
 include_directories(${GMOCK_INCLUDE_DIRS})
 
-set(ACT_SRCS ${SRC_ROOT}/src/randomize.cpp)
+set(ACT_SRCS ${SRC_ROOT}/src/randomize.cpp
+             ${SRC_ROOT}/src/defines.cpp
+             ${SRC_ROOT}/src/pack.cpp)
 
 set(FAKE_SRCS ${FAKE_ROOT}/fakeCharacter.cpp
                ${FAKE_ROOT}/fakeLog.cpp
-               ${FAKE_ROOT}/fakeUtilities.cpp)
+               ${FAKE_ROOT}/fakeUtilities.cpp
+               ${FAKE_ROOT}/fakeRace.cpp
+               ${FAKE_ROOT}/fakePlayerInput.cpp)
 
 # Randomize Tests
 set(EXEC_NAME randomizeTests)

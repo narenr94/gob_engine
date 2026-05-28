@@ -44,10 +44,15 @@ void Character::assignRandomValuesToAbilities(){
     }
 }
 
-Character::Character(const std::string& t_name, std::unique_ptr<Race> t_race, 
-    std::vector<std::unique_ptr<CharacterClass>> t_class, const Level t_level) :
-m_name(t_name), m_level(t_level), m_race(std::move(t_race)), m_class(std::move(t_class))
+Character::Character(const std::string& t_name, const std::string& t_race, 
+            std::vector<std::string> t_class, const Level t_level) :
+m_name(t_name), m_level(t_level), m_race(std::make_unique<Race>(t_race, this))
 {
+
+    for(auto& cl : t_class){
+        m_class.push_back(std::make_unique<CharacterClass>(cl, this));
+    }
+
     for(auto& ex : g_expPointsLookupTable){
         if(ex.first == t_level){
             m_expPoints = ex.second;
@@ -83,7 +88,7 @@ std::string Character::getName() const {
 }
 
 std::string Character::getRace() const {
-    return m_race->getRace();
+    return m_race->getRaceName();
 }
 
 std::string Character::getClass() const {
@@ -199,8 +204,14 @@ void Character::addLanguageProficiency(const std::string& language, bool speak, 
             return;
         }
     }
+
+    LanguageData temp;
+    temp.language = language;
+    temp.speak = speak;
+    temp.read = read;
+    temp.write = write;
     
-    m_languageData.push_back({language, speak, read, write});
+    m_languageData.push_back(temp);
 }
 
 void Character::setProficiencyData(const ProficiencyData& t_proficiencyData){
@@ -282,7 +293,7 @@ void Character::updateName(const std::string& t_name){
 
 void Character::levelUp(){
 
-    m_race->levelUp();
+    // m_race->levelUp();
     //m_class->levelUp();
 
     m_level = incrementLevel(m_level);
@@ -410,4 +421,12 @@ std::vector<std::pair<std::string, unsigned short int>> Character::getPackItems(
 
 void Character::updatePack(std::unique_ptr<Pack> t_pack){
     m_pack = std::move(t_pack);
+}
+
+void Character::updateSleepDuration(float t_sleepDurationHrs){
+    m_sleepDurationHrs = t_sleepDurationHrs;
+}
+
+float Character::getSleepDuration() const {
+    return m_sleepDurationHrs;
 }

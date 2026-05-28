@@ -202,3 +202,25 @@ JsonKeys stringToJsonKeys(const std::string& str){
     return JsonKeys::name;
 
 }
+
+std::string conditionsToString(conditionsType ct){
+    for(auto& c : conditionsTypeStrMap){
+        if(c.first == ct){
+            return c.second;
+        }
+    }
+
+    throw std::runtime_error("invalid conditionType");
+    return "";
+}
+
+conditionsType stringToConditionstype(std::string& str){
+    for(auto& c : conditionsTypeStrMap){
+        if(c.second == str){
+            return c.first;
+        }
+    }
+
+    throw std::runtime_error("invalid conditionType str : " + str);
+    return conditionsType::if_character_has_item;
+}

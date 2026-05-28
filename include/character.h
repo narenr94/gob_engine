@@ -37,6 +37,8 @@ class Character{
 
         float m_speed;
 
+        float m_sleepDurationHrs;
+
         std::vector<LanguageData> m_languageData;
 
         ProficiencyData m_proficiencyData;
@@ -63,8 +65,8 @@ class Character{
 
     public:
 
-        Character(const std::string& t_name, std::unique_ptr<Race> t_race, 
-            std::vector<std::unique_ptr<CharacterClass>> t_class, const Level t_level);
+        Character(const std::string& t_name, const std::string& t_race, 
+            std::vector<std::string> t_class, const Level t_level);
 
         virtual ~Character();
 
@@ -83,6 +85,8 @@ class Character{
         SizeData getSizeData() const;
 
         float getSpeed() const;
+
+        float getSleepDuration() const;
 
         std::vector<LanguageData> getLanguageData() const;
 
@@ -136,6 +140,8 @@ class Character{
         void updateAlignment(Alignment t_alignment);
 
         void updateSpeed(float t_speed);
+
+        void updateSleepDuration(float t_sleepDurationHrs);
 
         void addItemToPack(const std::string& item, unsigned short int count);
 

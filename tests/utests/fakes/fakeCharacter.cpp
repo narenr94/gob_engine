@@ -15,8 +15,9 @@ void Character::assignRandomValuesToAbilities(){
     
 }
 
-Character::Character(const std::string& t_name, std::unique_ptr<Race> t_race, 
-    std::vector<std::unique_ptr<CharacterClass>> t_class, const Level t_level)
+Character::Character(const std::string& t_name, const std::string& t_race, 
+            std::vector<std::string> t_class, const Level t_level) :
+m_name(t_name), m_level(t_level), m_race(nullptr)
 {
     
 
@@ -94,6 +95,14 @@ Alignment Character::getAlignment() const {
     return Alignment::lawful_good;
 }
 
+std::vector<std::pair<std::string, unsigned short int>> Character::getPackItems() const {
+    return {};
+}
+
+float Character::getSleepDuration() const {
+    return 0.0f;
+}
+
 
 //----------------Sets
 
@@ -153,5 +162,17 @@ void Character::updateAlignment(Alignment t_alignment){
 }
 
 void Character::updateSpeed(float t_speed){
+    
+}
+
+void Character::updateSleepDuration(float t_sleepDurationHrs){
+    
+}
+
+void Character::addItemToPack(const std::string& item, unsigned short int count){
+    
+}
+
+void Character::updatePack(std::unique_ptr<Pack> t_pack){
     
 }

@@ -1,5 +1,5 @@
 #include "gameData.h"
-#include "raceData.h"
+#include "commonJsonParser.h"
 
 GameData::GameData(const std::string& t_gameDataPath):
 m_gameDataPath(t_gameDataPath)
@@ -39,19 +39,35 @@ std::vector<std::string> GameData::getLanguagesVector() const {
     return m_languagesVector;
 }
 
-RaceData GameData::getRaceData(const std::string& t_raceName) const {
-    for(auto& race : m_racesVector){
-        if(race == t_raceName){
-            RaceData data;
-            getRaceDataFrom(m_gameDataPath + "/races/" + race + ".json", data);
-            return data;
+void GameData::getRaceData(const std::string& t_racePath, ConsolidatedData& t_conData, ConsolidatedOptionsData& t_conOptdata) const {
+    
+    json j;
+    if(readJsonFile(t_racePath, j)){
+
+        if(j.contains("base_race")){
+
+            if(j["base_race"].is_string()){
+                std::string baseRaceName = j["base_race"];
+                std::string baseRacePath = std::filesystem::path(t_racePath).parent_path().string() + "/" + baseRaceName + ".json";
+                getRaceData(baseRacePath, t_conData, t_conOptdata);
+            }
+            updateConsolidatedData(j, t_conData);
+            updateConsolidatedOptionsData(j, t_conOptdata);
+        }
+        else{
+            throw std::runtime_error("base_race key not found in race JSON file:" + t_racePath);
         }
     }
 
-    // Return an empty RaceData if the race is not found
-    return RaceData();
+
 }
 
 std::vector<std::string> GameData::getItemsVector() const {
     return m_itemsVector;
+}
+
+std::string GameData::getRaceFilePath(const std::string& t_raceName) const{
+
+    return m_gameDataPath + "/races/" + t_raceName + ".json";
+
 }

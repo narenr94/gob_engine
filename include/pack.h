@@ -19,4 +19,6 @@ class Pack{
         void addItem(const std::string& item, unsigned short int count);
 
         std::vector<std::pair<std::string, unsigned short int>> getItems() const;
+
+        //todo : pack factory
 };

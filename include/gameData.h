@@ -1,9 +1,10 @@
 #pragma once
 
+#include "defines.h"
+
 #include <vector>
 #include <string>
 
-struct RaceData; //Forward declaration
 
 class GameData{
 
@@ -53,6 +54,8 @@ class GameData{
 
         std::vector<std::string> getItemsVector() const;
 
-        RaceData getRaceData(const std::string& t_raceName) const;
+        std::string getRaceFilePath(const std::string& t_raceName) const;
+
+        void getRaceData(const std::string& t_raceName, ConsolidatedData& conData, ConsolidatedOptionsData& conOptdata) const;
 
 };

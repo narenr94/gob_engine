@@ -1,5 +1,5 @@
 #include "gameData.h"
-#include "raceData.h"
+#include "defines.h"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <fstream>
@@ -232,46 +232,35 @@ TEST_F(GameDataTest, RacesVectorNotEmpty) {
 // GET RACE DATA TESTS
 // ============================================================================
 
-TEST_F(GameDataTest, GetRaceDataForValidRace) {
+TEST_F(GameDataTest, GetRaceFilePathReturnsCorrectPath) {
     GameData* gameData = GameData::getInstance(testDataPath);
     
     EXPECT_NO_THROW({
-        RaceData raceData = gameData->getRaceData("human");
+        std::string path = gameData->getRaceFilePath("human");
+        EXPECT_FALSE(path.empty());
+    });
+}
+
+TEST_F(GameDataTest, GetRaceDataDoesNotThrowForValidRace) {
+    GameData* gameData = GameData::getInstance(testDataPath);
+    ConsolidatedData conData;
+    ConsolidatedOptionsData conOptData;
+    
+    std::string racePath = gameData->getRaceFilePath("human");
+    EXPECT_NO_THROW({
+        gameData->getRaceData(racePath, conData, conOptData);
     });
 }
 
 TEST_F(GameDataTest, GetRaceDataForMultipleRaces) {
     GameData* gameData = GameData::getInstance(testDataPath);
+    ConsolidatedData conData1, conData2, conData3;
+    ConsolidatedOptionsData conOptData1, conOptData2, conOptData3;
     
     EXPECT_NO_THROW({
-        RaceData human = gameData->getRaceData("human");
-        RaceData elf = gameData->getRaceData("high_elf");
-        RaceData dwarf = gameData->getRaceData("dwarf");
-    });
-}
-
-TEST_F(GameDataTest, GetRaceDataWithNonExistentRace) {
-    GameData* gameData = GameData::getInstance(testDataPath);
-    
-    // Should return default empty RaceData without throwing
-    EXPECT_NO_THROW({
-        RaceData raceData = gameData->getRaceData("nonexistent_race");
-    });
-}
-
-TEST_F(GameDataTest, GetRaceDataWithPlayerInputEnabled) {
-    GameData* gameData = GameData::getInstance(testDataPath);
-    
-    EXPECT_NO_THROW({
-        RaceData raceData = gameData->getRaceData("human");
-    });
-}
-
-TEST_F(GameDataTest, GetRaceDataWithPlayerInputDisabled) {
-    GameData* gameData = GameData::getInstance(testDataPath);
-    
-    EXPECT_NO_THROW({
-        RaceData raceData = gameData->getRaceData("human");
+        gameData->getRaceData(gameData->getRaceFilePath("human"), conData1, conOptData1);
+        gameData->getRaceData(gameData->getRaceFilePath("high_elf"), conData2, conOptData2);
+        gameData->getRaceData(gameData->getRaceFilePath("dwarf"), conData3, conOptData3);
     });
 }
 

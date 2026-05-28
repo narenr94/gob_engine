@@ -1,18 +1,24 @@
 #include "race.h"
 
 
-Race::Race(Character* t_character, const std::string& t_race, bool enablePlayerInput)
+Race::Race(const std::string& t_raceName, Character* t_character)
+: m_character(t_character), m_raceName(t_raceName)
 {
+    // Stub: Race data loading not tested in unit tests
 }
 
-void Race::raceBenifitsCharacterCreation(){
-
+Race::~Race(){
+    m_character = nullptr;
 }
 
-void Race::levelUp(){
-
+std::string Race::getRaceName() const {
+    return m_raceName;
 }
 
-std::string Race::getRace() const {
-    return "";
+void Race::setData(){
+    // Stub: Race data application not tested in unit tests
+}
+
+void Race::realizeOptions(){
+    // Stub: Options realization not tested in unit tests  
 }

@@ -1,26 +1,32 @@
 #pragma once
 
+#include "defines.h"
+
 #include <string>
+
 
 class Character; //Forward declaration
 
-class Race {
+struct Race{
+
     private:
-        Character* m_character;
 
-        std::string m_race;
+    std::string m_raceName;
 
-    protected:
-
-        void raceBenifitsCharacterCreation();
+    Character* m_character;
 
     public:
-        Race(Character* t_character, const std::string& t_race, bool enablePlayerInput);
 
-        ~Race() = default;
+    Race(const std::string& t_raceName, Character* t_character);
+    ~Race();
 
-        void levelUp();
+    //-----replace data
 
-        std::string getRace() const;        
-        
+    void setData();
+
+    void realizeOptions();
+
+    std::string getRaceName() const;
+
+
 };

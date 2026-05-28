@@ -32,7 +32,7 @@ void extractAndApplyAgeData(json& j, AgeData& ageData){
     // Stub: for fake tests
 }
 
-void extractAndApplyAlignmentData(json& j, Alignment& alignment){
+void extractAndApplyAlignmentData(json& j, AlignmentData& alignmentData){
     // Stub: for fake tests
 }
 
@@ -40,7 +40,7 @@ void extractAndApplySizeData(json& j, SizeData& sizeData){
     // Stub: for fake tests
 }
 
-void extractAndApplySpeedData(json& j, float& speedData){
+void extractAndApplySpeedData(json& j, SpeedData& speedData){
     // Stub: for fake tests
 }
 
@@ -129,11 +129,27 @@ std::vector<std::string> findAllRaces(const std::string& t_racePath){
     return racesVector;
 }
 
-void extractAndApplySleepDurationData(json& j, float& sleepDurationData){
+void extractAndApplySleepDurationData(json& j, SleepDurationData& sleepDurationData){
     // Stub: for fake tests
 }
 
-void extractAndApplyOptionsData(json& j, OptionsData& optionsData){
+void extractAndApplyPackData(json& j, PackData& packData){
+    // Stub: for fake tests
+}
+
+void extractAndApplyItemData(json& j, std::vector<ItemData>& itemData){
+    // Stub: for fake tests
+}
+
+void updateConsolidatedData(json& j, ConsolidatedData& conData){
+    // Stub: for fake tests
+}
+
+void extractAndApplyOptionsData(json& j, ConsolidatedOptionsData& optionsData){
+    // Stub: for fake tests
+}
+
+void updateConsolidatedOptionsData(json& j, ConsolidatedOptionsData& optionsData){
     // Stub: for fake tests
 }
 
