@@ -53,6 +53,13 @@ void GameData::getRaceData(const std::string& t_racePath, ConsolidatedData& t_co
             }
             updateConsolidatedData(j, t_conData);
             updateConsolidatedOptionsData(j, t_conOptdata);
+
+#if defined(TEST_PRINTS)
+            LOG("Race data for " + t_racePath);
+            t_conData.printData();
+            t_conOptdata.printOption();
+#endif            
+
         }
         else{
             throw std::runtime_error("base_race key not found in race JSON file:" + t_racePath);

@@ -264,6 +264,134 @@ TEST_F(GameDataTest, GetRaceDataForMultipleRaces) {
     });
 }
 
+TEST_F(GameDataTest, ValidateRaceDataWithTestPrints) {
+    GameData* gameData = GameData::getInstance(testDataPath);
+    
+    // Test Human race data
+    {
+        ConsolidatedData conData;
+        ConsolidatedOptionsData conOptData;
+        std::string racePath = gameData->getRaceFilePath("human");
+        
+        ASSERT_NO_THROW({
+            gameData->getRaceData(racePath, conData, conOptData);
+        }) << "Failed to load race data for human";
+        
+#if defined(TEST_PRINTS)
+        std::cout << "\n=== Validating race: human ===" << std::endl;
+#endif
+        
+        // Verify consolidated data is populated
+        EXPECT_FALSE(conData.data.empty()) << "Human race data should not be empty";
+        
+        // Check for specific data types in consolidated data
+        bool hasAgeData = false;
+        bool hasSizeData = false;
+        bool hasSpeedData = false;
+        bool hasLanguageData = false;
+        bool hasAlignmentData = false;
+        
+        for (const auto* dataPtr : conData.data) {
+            if (dynamic_cast<const AgeData*>(dataPtr)) {
+                hasAgeData = true;
+                const AgeData* ageData = static_cast<const AgeData*>(dataPtr);
+                EXPECT_EQ(ageData->maturityAge, 18) << "Human maturity age should be 18";
+                EXPECT_EQ(ageData->avgLifespan, 100) << "Human lifespan should be 100";
+            }
+            else if (dynamic_cast<const SizeData*>(dataPtr)) {
+                hasSizeData = true;
+                const SizeData* sizeData = static_cast<const SizeData*>(dataPtr);
+                EXPECT_EQ(sizeData->category, SizeCategory::Medium) << "Human size should be Medium";
+                EXPECT_FLOAT_EQ(sizeData->dimensions.first, 1.7f) << "Human height should be 1.7m";
+                EXPECT_FLOAT_EQ(sizeData->dimensions.second, 70.0f) << "Human weight should be 70kg";
+            }
+            else if (dynamic_cast<const SpeedData*>(dataPtr)) {
+                hasSpeedData = true;
+                const SpeedData* speedData = static_cast<const SpeedData*>(dataPtr);
+                EXPECT_FLOAT_EQ(speedData->speed, 9.0f) << "Human speed should be 9 m/s";
+            }
+            else if (dynamic_cast<const LanguageData*>(dataPtr)) {
+                hasLanguageData = true;
+                const LanguageData* langData = static_cast<const LanguageData*>(dataPtr);
+                EXPECT_EQ(langData->language, "common") << "Human should speak Common";
+                EXPECT_TRUE(langData->speak) << "Human should be able to speak Common";
+                EXPECT_TRUE(langData->read) << "Human should be able to read Common";
+                EXPECT_TRUE(langData->write) << "Human should be able to write Common";
+            }
+            else if (dynamic_cast<const AlignmentData*>(dataPtr)) {
+                hasAlignmentData = true;
+                const AlignmentData* alignData = static_cast<const AlignmentData*>(dataPtr);
+                EXPECT_EQ(alignData->alignment, Alignment::neutral_neutral) << "Human alignment should be neutral_neutral";
+            }
+        }
+        
+        EXPECT_TRUE(hasAgeData) << "Human race should have age data";
+        EXPECT_TRUE(hasSizeData) << "Human race should have size data";
+        EXPECT_TRUE(hasSpeedData) << "Human race should have speed data";
+        EXPECT_TRUE(hasLanguageData) << "Human race should have language data";
+        EXPECT_TRUE(hasAlignmentData) << "Human race should have alignment data";
+    }
+    
+    // Test Dwarf race data
+    {
+        ConsolidatedData conData;
+        ConsolidatedOptionsData conOptData;
+        std::string racePath = gameData->getRaceFilePath("dwarf");
+        
+        ASSERT_NO_THROW({
+            gameData->getRaceData(racePath, conData, conOptData);
+        }) << "Failed to load race data for dwarf";
+        
+#if defined(TEST_PRINTS)
+        std::cout << "\n=== Validating race: dwarf ===" << std::endl;
+#endif
+        
+        EXPECT_FALSE(conData.data.empty()) << "Dwarf race data should not be empty";
+        
+        // Check dwarf-specific values
+        for (const auto* dataPtr : conData.data) {
+            if (const AgeData* ageData = dynamic_cast<const AgeData*>(dataPtr)) {
+                EXPECT_EQ(ageData->maturityAge, 50) << "Dwarf maturity age should be 50";
+                EXPECT_EQ(ageData->avgLifespan, 350) << "Dwarf lifespan should be 350";
+            }
+            else if (const SpeedData* speedData = dynamic_cast<const SpeedData*>(dataPtr)) {
+                EXPECT_FLOAT_EQ(speedData->speed, 7.5f) << "Dwarf speed should be 7.5 m/s";
+            }
+            else if (const LanguageData* langData = dynamic_cast<const LanguageData*>(dataPtr)) {
+                EXPECT_EQ(langData->language, "dwarvish") << "Dwarf should speak Dwarvish";
+            }
+        }
+    }
+    
+    // Test HighElf race data
+    {
+        ConsolidatedData conData;
+        ConsolidatedOptionsData conOptData;
+        std::string racePath = gameData->getRaceFilePath("high_elf");
+        
+        ASSERT_NO_THROW({
+            gameData->getRaceData(racePath, conData, conOptData);
+        }) << "Failed to load race data for high_elf";
+        
+#if defined(TEST_PRINTS)
+        std::cout << "\n=== Validating race: high_elf ===" << std::endl;
+#endif
+        
+        EXPECT_FALSE(conData.data.empty()) << "High Elf race data should not be empty";
+        
+        // Check high elf-specific values
+        for (const auto* dataPtr : conData.data) {
+            if (const AgeData* ageData = dynamic_cast<const AgeData*>(dataPtr)) {
+                EXPECT_EQ(ageData->maturityAge, 100) << "High Elf maturity age should be 100";
+                EXPECT_EQ(ageData->avgLifespan, 750) << "High Elf lifespan should be 750";
+            }
+            else if (const LanguageData* langData = dynamic_cast<const LanguageData*>(dataPtr)) {
+                EXPECT_EQ(langData->language, "elvish") << "High Elf should speak Elvish";
+            }
+        }
+    }
+}
+
 // ============================================================================
 // CLASSES TESTS (Currently Todo in Implementation)
 // ============================================================================
