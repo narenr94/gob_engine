@@ -1,0 +1,46 @@
+{
+    "name": "dragonborn",
+    "is_abstract": true,
+    "base_race" : null,
+    "ability_mods" : [
+        {
+            "ability" : "strength",
+            "mod" : 2
+        },
+        {
+            "ability" : "charisma",
+            "mod" : 1}
+    ],
+    "age" : {
+        "maturity" : 15,
+        "life_span" : 80        
+    },
+    "size" : {
+        "category" : "medium",
+        "avg_height_m" : 1.83,
+        "avg_weight_kg" : 115
+    },
+    "speed_mps" : 9,
+    "languages" : [
+        {
+            "name" : "common",
+            "speak" : true,
+            "read" : true,
+            "write" : true
+        },
+        {
+            "name" : "draconic",
+            "speak" : true,
+            "read" : true,
+            "write" : true
+        }
+    ],
+    "options" : [
+        {
+            "attribute" : "alignment",
+            "arguments" : [],
+            "choose" : 1,
+            "choices" : ["lawful_good", "chaotic_evil"]
+        }
+    ]
+}

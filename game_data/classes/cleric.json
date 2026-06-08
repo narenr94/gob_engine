@@ -1,6 +1,8 @@
 {
     "name" : "cleric",
     "description" : "A priestly champion who wields divine magic in service of a higher power.",
+    "is_abstract": true,
+    "base_class" : null,
     "param_die" : [
         {
             "param" : "hit_points",
@@ -20,8 +22,8 @@
             "choices" : ["history", "insight", "medicine", "persuasion", "religion"]
         },
         {
-            "attribute" : "pack",
-            "arguments" : [],
+            "attribute" : "item",
+            "arguments" : ["1", "1"],
             "choose" : 1,
             "choices" : ["priest_pack", "explorer_pack"]
         },

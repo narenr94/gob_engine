@@ -1,0 +1,82 @@
+{
+    "name" : "fighter",
+    "description" : "A master of martial combat, skilled with a variety of weapons and armor.",
+    "is_abstract": true,
+    "base_class" : null,
+    "param_die" : [
+        {
+            "param" : "hit_points",
+            "value" : 10
+        }
+    ],
+    "proficiency" : {
+        "weapons" : ["simple_weapons", "martial_weapons"],
+        "armors" : ["all_armor", "all_shields"],
+        "saving_throws" : ["strength", "constitution"]
+    },
+    "item" :[
+        {
+            "name" : "martial_weapon",
+            "count" : 1
+        }
+    ],
+    "options" : [
+        {
+            "attribute" : "proficiency",
+            "arguments" : ["skills"],
+            "choose" : 2,
+            "choices" : ["athletics", "acrobatics", "animal_handling", "history", "insight", "intimidation", "perception", "survival"]
+        },
+        {
+            "attribute" : "item",
+            "arguments" : ["1", "1"],
+            "choose" : 1,
+            "choices" : ["dungeoneer_pack", "explorer_pack"]
+        },
+        {
+            "attribute" : "item",
+            "arguments" : ["1", "1"],
+            "choose" : 1,
+            "choices" : ["all_shields", "martial_weapon"]
+        },
+        {
+            "attribute" : "item",
+            "arguments" : ["1" , "1"],
+            "choose" : 1,
+            "choices" : ["leather_armor", "chain_mail"]
+        },
+        {
+            "attribute" : "item",
+            "arguments" : ["1", "2"],
+            "choose" : 1,
+            "choices" : ["light_crossbow", "handaxe"]
+        }
+    ],
+    "conditional" : [
+        {
+            "condition" : "if_character_has_item",
+            "arguments" : ["leather_armor", "1"],
+            "todo" : [
+                {
+                    "attribute" : "item",
+                    "arguments" : ["arrow", "20"]                    
+                },
+                {
+                    "attribute" : "item",
+                    "arguments" : ["longbow", "1"]
+                }
+            ]
+            
+        },
+        {
+            "condition" : "if_character_has_item",
+            "arguments" : ["light_crossbow", "1"],
+            "todo" : [
+                {
+                    "attribute" : "item",
+                    "arguments" : ["bolt", "20"]
+                }
+            ]
+        }
+    ]
+}

@@ -2,8 +2,6 @@
 #include "character.h"
 #include "gameData.h"
 
-#include <filesystem>
-
 
 Race::Race(const std::string& t_raceName, Character* t_character)
 : m_character(t_character), m_raceName(t_raceName)
@@ -13,7 +11,13 @@ Race::Race(const std::string& t_raceName, Character* t_character)
 
     GameData* gameData = GameData::getInstance();
 
-    gameData->getRaceData(gameData->getRaceFilePath(m_raceName), *conData, *conOptionData);
+    try{
+        gameData->getRaceData(gameData->getRaceFilePath(m_raceName), *conData, *conOptionData);
+    }
+    catch(const std::exception& e){
+        LOG("Error loading race data for " + m_raceName + ": " + e.what());
+    }
+
 }
 
 Race::~Race(){

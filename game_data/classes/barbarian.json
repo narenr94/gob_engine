@@ -1,0 +1,43 @@
+{
+    "name" : "barbarian",
+    "description" : "A fierce warrior of primitive background who can enter a battle rage.",
+    "is_abstract": true,
+    "base_class" : null,
+    "param_die" : [
+        {
+            "param" : "hit_points",
+            "value" : 12
+        }
+    ],
+    "proficiency" : {
+        "weapons" : ["simple_weapons", "martial_weapons"],
+        "armors" : ["light_armor", "medium_armor", "all_shields"],
+        "saving_throws" : ["strength", "constitution"]
+    },
+    "options" : [
+        {
+            "attribute" : "proficiency",
+            "arguments" : ["skills"],
+            "choose" : 2,
+            "choices" : ["athletics", "animal_handling", "nature", "perception", "intimidation", "survival"]
+        },
+        {
+            "attribute" : "item",
+            "arguments" : ["4", "1"],
+            "choose" : 1,
+            "choices" : ["javelin", "explorer_pack"]
+        },
+        {
+            "attribute" : "item",
+            "arguments" : ["1", "1"],
+            "choose" : 1,
+            "choices" : ["greataxe", "martial_melee_weapon"]
+        },
+        {
+            "attribute" : "item",
+            "arguments" : ["1", "2"],
+            "choose" : 1,
+            "choices" : ["simple_weapon", "handaxe"]
+        }
+    ]
+}

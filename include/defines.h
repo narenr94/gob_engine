@@ -102,6 +102,7 @@ enum class JsonKeys{
     name,
     is_abstract,
     base_race,
+    base_class,
     ability_mods,
     param_mods,
     ability,
@@ -149,9 +150,8 @@ enum class JsonKeys{
     conditional,
     condition,
     todo,
-    pack,
     item,
-    count
+    count,  
 
 };
 
@@ -254,6 +254,7 @@ const std::vector<std::pair<JsonKeys, std::string>> jsonKeysStrMap = {
     {JsonKeys::name, "name"},
     {JsonKeys::is_abstract, "is_abstract"},
     {JsonKeys::base_race, "base_race"},
+    {JsonKeys::base_class, "base_class"},
     {JsonKeys::ability_mods, "ability_mods"},
     {JsonKeys::param_mods, "param_mods"},
     {JsonKeys::ability, "ability"},
@@ -301,7 +302,6 @@ const std::vector<std::pair<JsonKeys, std::string>> jsonKeysStrMap = {
     {JsonKeys::conditional, "conditional"},
     {JsonKeys::condition, "condition"},
     {JsonKeys::todo, "todo"},
-    {JsonKeys::pack, "pack"},
     {JsonKeys::item, "item"},
     {JsonKeys::count, "count"}
 };
@@ -417,13 +417,6 @@ struct ItemData : public Data{
     void applyData(Character* t_character) const;
 };
 
-struct PackData : public Data{
-    std::string packData = "";
-
-    void printData() const;
-    void applyData(Character* t_character) const;
-};
-
 struct ConsolidatedData : public Data{
 
     std::vector<Data*> data = {};
@@ -469,7 +462,7 @@ struct ItemOptionData : public OptionData{
     void realizeOptions(Character* t_character, bool enablePlayerInput);
 };
 
-struct PackOptionData : public OptionData{
+struct AlignmentOptionData : public OptionData{
     std::vector<std::string> choices = {};
     unsigned short int chooseCount = 0;
 

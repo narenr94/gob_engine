@@ -56,6 +56,14 @@ class GameData{
 
         std::string getRaceFilePath(const std::string& t_raceName) const;
 
+        std::string getClassFilePath(const std::string& t_className) const;
+
+        std::vector<std::string> findAllRaces(const std::string& t_racePath);
+
+        std::vector<std::string> findAllClasses(const std::string& t_classPath);
+
         void getRaceData(const std::string& t_raceName, ConsolidatedData& conData, ConsolidatedOptionsData& conOptdata) const;
+
+        void getClassData(const std::string& t_className, ConsolidatedData& conData, ConsolidatedOptionsData& conOptdata) const;
 
 };

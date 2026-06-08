@@ -42,12 +42,6 @@ void ItemData::applyData(Character* t_character) const{
     t_character->addItemToPack(itemData.first, itemData.second);
 }
 
-void PackData::applyData(Character* t_character) const{
-
-    //todo : pack factory
-    t_character->updatePack(std::make_unique<Pack>());
-}
-
 void AlignmentData::applyData(Character* t_character) const{
     t_character->updateAlignment(alignment);
 }
@@ -147,7 +141,7 @@ void ItemOptionData::realizeOptions(Character* t_character, bool enablePlayerInp
 
 }
 
-void PackOptionData::realizeOptions(Character* t_character, bool enablePlayerInput){
+void AlignmentOptionData::realizeOptions(Character* t_character, bool enablePlayerInput){
 
     std::vector<std::string> chosen;
 
@@ -158,9 +152,9 @@ void PackOptionData::realizeOptions(Character* t_character, bool enablePlayerInp
         chosen = chooseRandomOptions(choices, chooseCount);
     }
 
-    for(const auto& packName : chosen){
-        //todo : pack factory
-        t_character->updatePack(std::make_unique<Pack>());
+    if(!chosen.empty()){
+        Alignment alignment = stringToAlignment(chosen[0]);
+        t_character->updateAlignment(alignment);
     }
 }
 
@@ -246,11 +240,6 @@ void ItemData::printData() const{
     LOG("item:" + itemData.first + " count:" + std::to_string(itemData.second));
 }
 
-void PackData::printData() const{
-    LOG("Pack Data:");
-    LOG("pack:" + packData);
-}
-
 void AlignmentData::printData() const{
     LOG("Alignment Data:");
     LOG("alignment:" + alignmentToString(alignment));
@@ -304,8 +293,8 @@ void ItemOptionData::printOption(){
     LOG("Choose Count:" + std::to_string(chooseCount));
 }
 
-void PackOptionData::printOption(){
-    LOG("Pack Option Data:");
+void AlignmentOptionData::printOption(){
+    LOG("Alignment Option Data:");
     LOG("Choices:");
     for(auto& ch : choices){
         LOG(ch);
